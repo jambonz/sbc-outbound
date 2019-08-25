@@ -33,7 +33,7 @@
     "drachtio-srf": "^4.4.14",
     "eslint": "^6.2.2",
     "eslint-plugin-promise": "^4.2.1",
-    "jambonz-mw-registrar": "0.0.3s",
+    "jambonz-mw-registrar": "0.0.3",
     "pino": "^5.13.2",
     "rtpengine-client": "^0.0.8"
   },
