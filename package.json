@@ -1,0 +1,48 @@
+{
+  "name": "sbc-outbound",
+  "version": "0.0.1",
+  "main": "app.js",
+  "engines": {
+    "node": ">= 8.10.0"
+  },
+  "keywords": [
+    "sip",
+    "drachtio"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jambonz/sbc-outbound.git"
+  },
+  "author": "Dave Horton",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jambonz/sbc-outbound/issues"
+  },
+  "homepage": "https://github.com/jambonz/sbc-outbound#readme",
+  "description": "jambonz session border controller application for outbound calls",
+  "scripts": {
+    "start": "node app",
+    "test": "NODE_ENV=test node test/ | ./node_modules/.bin/tap-spec",
+    "coverage": "./node_modules/.bin/nyc --reporter html --report-dir ./coverage npm run test",
+    "jslint": "eslint app.js lib"
+  },
+  "dependencies": {
+    "config": "^3.2.2",
+    "debug": "^4.1.1",
+    "drachtio-fn-b2b-sugar": "^0.0.12",
+    "drachtio-srf": "^4.4.14",
+    "eslint": "^6.2.2",
+    "eslint-plugin-promise": "^4.2.1",
+    "jambonz-mw-registrar": "0.0.3s",
+    "pino": "^5.13.2",
+    "rtpengine-client": "^0.0.8"
+  },
+  "devDependencies": {
+    "blue-tape": "^1.0.0",
+    "clear-module": "^4.0.0",
+    "nyc": "^14.1.1",
+    "tap": "^14.6.1",
+    "tap-dot": "^2.0.0",
+    "tap-spec": "^5.0.0"
+  }
+}

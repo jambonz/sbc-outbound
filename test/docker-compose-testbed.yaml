@@ -1,0 +1,60 @@
+version: '3'
+
+networks:
+  sbc-outbound:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.39.0.0/16
+
+services:
+  sbc:
+    image: drachtio/drachtio-server:latest
+    command: drachtio --contact "sip:*;transport=udp" --loglevel debug --sofia-loglevel 9
+    ports:
+      - "9060:9022/tcp"
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.10
+
+  redis:
+    image: redis:5-alpine
+    ports:
+      - "16379:6379/tcp"
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.11
+
+  rtpengine:
+    image: drachtio/rtpengine:latest
+    ports:
+      - "12222:22222/udp"
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.12
+
+  registrar:
+    image: jambonz/sbc-registrar:latest
+    command: npm start
+    env_file: registrar.env
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.13
+
+  auth-server:
+    image: jambonz/customer-auth-server:latest
+    command: npm start
+    env_file: http-auth.env
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.14
+
+  carrier:
+    image: drachtio/sipp:latest
+    command: sipp -sf /tmp/uas.xml
+    volumes:
+      - ./scenarios:/tmp
+    tty: true
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.20
