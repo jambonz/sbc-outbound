@@ -26,17 +26,6 @@
   <recv request="INVITE" crlf="true">
   </recv>
 
-  <!-- The '[last_*]' keyword is replaced automatically by the          -->
-  <!-- specified header if it was present in the last message received  -->
-  <!-- (except if it was a retransmission). If the header was not       -->
-  <!-- present or if no message has been received, the '[last_*]'       -->
-  <!-- keyword is discarded, and all bytes until the end of the line    -->
-  <!-- are also discarded.                                              -->
-  <!--                                                                  -->
-  <!-- If the specified header was present several times in the         -->
-  <!-- message, all occurrences are concatenated (CRLF separated)       -->
-  <!-- to be used in place of the '[last_*]' keyword.                   -->
-
   <send>
     <![CDATA[
 

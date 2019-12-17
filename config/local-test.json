@@ -12,14 +12,14 @@
     "port": 16379,
     "host": "127.0.0.1"
   },
+  "mysql": {
+    "host": "localhost",
+    "user": "jambones_test",
+    "password": "jambones_test",
+    "database": "jambones_test"
+  },
   "logging": {
     "level": "info"
-  },
-  "trunks": {
-    "outbound": {
-      "name": "carrier1",
-      "host": "sip:172.39.0.20"
-    }
   },
   "transcoding": {
     "rtpCharacteristics" : {

@@ -58,3 +58,33 @@ services:
     networks:
       sbc-outbound:
         ipv4_address: 172.39.0.20
+
+  carrier-503:
+    image: drachtio/sipp:latest
+    command: sipp -sf /tmp/uas-503.xml
+    volumes:
+      - ./scenarios:/tmp
+    tty: true
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.21
+
+  carrier-cancel:
+    image: drachtio/sipp:latest
+    command: sipp -sf /tmp/uas-cancel.xml
+    volumes:
+      - ./scenarios:/tmp
+    tty: true
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.22
+
+  carrier-expect-reinvite:
+    image: drachtio/sipp:latest
+    command: sipp -sf /tmp/uas-reinvite.xml
+    volumes:
+      - ./scenarios:/tmp
+    tty: true
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.23

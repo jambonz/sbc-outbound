@@ -3,7 +3,11 @@ const srf = new Srf();
 const config = require('config');
 const logger = require('pino')(config.get('logging'));
 const {route, setLogger} = require('./lib/middleware');
+const CallSession = require('./lib/call-session');
+const {performLcr} = require('jambonz-db-helpers')(config.get('mysql'), logger);
+srf.locals.dbHelpers = {performLcr};
 const debug = require('debug')('jambonz:sbc-outbound');
+debug(typeof performLcr);
 
 // disable logging in test mode
 if (process.env.NODE_ENV === 'test') {
@@ -30,6 +34,10 @@ if (process.env.NODE_ENV === 'test') {
 }
 
 srf.use('invite', [setLogger(logger), route(config.get('redis'))]);
-srf.invite(require('./lib/invite'));
+srf.invite((req, res) => {
+  debug('got invite');
+  const session = new CallSession(logger, req, res);
+  session.connect();
+});
 
 module.exports = {srf};

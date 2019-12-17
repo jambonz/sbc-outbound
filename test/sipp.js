@@ -1,5 +1,5 @@
 const { spawn } = require('child_process');
-//const debug = require('debug')('test:sipp');
+const debug = require('debug')('test:sipp');
 let network;
 const obj = {};
 let output = '';
@@ -64,11 +64,11 @@ obj.sippUac = (file, opts) => {
     });
 
     child_process.stdout.on('data', (data) => {
-      //debug(`stdout: ${data}`);
+      debug(`stdout: ${data}`);
       addOutput(data.toString());
     });
     child_process.stdout.on('data', (data) => {
-      //debug(`stdout: ${data}`);
+      debug(`stdout: ${data}`);
       addOutput(data.toString());
     });
   });
