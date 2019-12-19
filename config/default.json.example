@@ -1,6 +1,6 @@
 {
   "drachtio": {
-    "port": 3003,
+    "port": 3002,
     "secret": "cymru"
   },
   "rtpengine": {
@@ -14,11 +14,11 @@
   "logging": {
     "level": "info"
   },
-  "trunks": {
-    "outbound": {
-      "name": "carrier1",
-      "host": "sip:10.123.22.3"
-    }
+  "mysql": {
+    "host": "localhost",
+    "user": "jambones",
+    "password": "jambones",
+    "database": "jambones"
   },
   "transcoding": {
     "rtpCharacteristics" : {

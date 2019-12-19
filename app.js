@@ -25,6 +25,7 @@ if (config.has('drachtio.host')) {
   });
 }
 else {
+  logger.info(`listening for drachtio server traffic on ${JSON.stringify(config.get('drachtio'))}`);
   srf.listen(config.get('drachtio'));
 }
 if (process.env.NODE_ENV === 'test') {
