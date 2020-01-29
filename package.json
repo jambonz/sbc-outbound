@@ -1,6 +1,6 @@
 {
   "name": "sbc-outbound",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "app.js",
   "engines": {
     "node": ">= 8.10.0"
@@ -31,7 +31,7 @@
     "debug": "^4.1.1",
     "drachtio-fn-b2b-sugar": "^0.0.12",
     "drachtio-srf": "^4.4.24",
-    "jambonz-db-helpers": "^0.1.5",
+    "jambonz-db-helpers": "^0.2.0",
     "jambonz-mw-registrar": "^0.1.0",
     "pino": "^5.14.0",
     "rtpengine-client": "^0.0.8"
