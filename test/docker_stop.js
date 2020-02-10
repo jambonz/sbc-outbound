@@ -1,6 +1,7 @@
 const test = require('tape').test ;
 const exec = require('child_process').exec ;
 
+/*
 test('docker logs', (t) => {
   exec('docker logs test_sbc_1', (err, stdout, stderr) => {
     console.log(stdout);
@@ -8,6 +9,7 @@ test('docker logs', (t) => {
     t.end();
   });
 });
+*/
 
 test('stopping docker network..', (t) => {
   t.timeoutAfter(10000);
