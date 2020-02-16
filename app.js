@@ -41,7 +41,7 @@ if (process.env.DRACHTIO_HOST) {
   });
 }
 else {
-  srf.listen({host: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET});
+  srf.listen({port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET});
 }
 if (process.env.NODE_ENV === 'test') {
   srf.on('error', (err) => {
