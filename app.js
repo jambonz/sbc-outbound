@@ -14,6 +14,8 @@ const opts = Object.assign({
   timestamp: () => {return `, "time": "${new Date().toISOString()}"`;}
 }, {level: process.env.JAMBONES_LOGLEVEL || 'info'});
 const logger = require('pino')(opts);
+const StatsCollector = require('jambonz-stats-collector');
+const stats = srf.locals.stats = new StatsCollector(logger);
 const {route, setLogger} = require('./lib/middleware');
 const CallSession = require('./lib/call-session');
 const {performLcr} = require('jambonz-db-helpers')({
@@ -24,15 +26,7 @@ const {performLcr} = require('jambonz-db-helpers')({
   connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10
 }, logger);
 srf.locals.dbHelpers = {performLcr};
-
-// parse rtpengines
-srf.locals.rtpEngines = process.env.JAMBONES_RTPENGINES
-  .split(',')
-  .map((hp) => {
-    const arr = /^(.*):(.*)$/.exec(hp.trim());
-    if (arr) return {host: arr[1], port: parseInt(arr[2])};
-  });
-assert.ok(srf.locals.rtpEngines.length > 0, 'JAMBONES_RTPENGINES must be an array host:port addresses');
+const activeCallIds = srf.locals.activeCallIds = new Set();
 
 if (process.env.DRACHTIO_HOST) {
   srf.connect({host: process.env.DRACHTIO_HOST, port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET });
@@ -57,5 +51,9 @@ srf.invite((req, res) => {
   const session = new CallSession(logger, req, res);
   session.connect();
 });
+
+setInterval(() => {
+  stats.gauge('sbc.sip.calls.count', activeCallIds.size, ['direction:outbound']);
+}, 3000);
 
 module.exports = {srf};
