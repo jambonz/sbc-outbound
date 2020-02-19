@@ -54,6 +54,6 @@ srf.invite((req, res) => {
 
 setInterval(() => {
   stats.gauge('sbc.sip.calls.count', activeCallIds.size, ['direction:outbound']);
-}, 3000);
+}, 5000);
 
 module.exports = {srf};

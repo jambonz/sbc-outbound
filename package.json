@@ -33,7 +33,7 @@
     "jambonz-rtpengine-utils": "0.0.5",
     "jambonz-db-helpers": "^0.3.2",
     "jambonz-mw-registrar": "^0.1.2",
-    "jambonz-stats-collector": "0.0.1",
+    "jambonz-stats-collector": "0.0.3",
     "pino": "^5.14.0",
     "rtpengine-client": "^0.0.8"
   },
