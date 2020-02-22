@@ -26,6 +26,11 @@ const {performLcr} = require('jambonz-db-helpers')({
   connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10
 }, logger);
 srf.locals.dbHelpers = {performLcr};
+const {getRtpEngine} = require('jambonz-rtpengine-utils')(process.env.JAMBONES_RTPENGINES.split(','), logger, {
+  emitter: srf.locals.stats
+});
+srf.locals.getRtpEngine = getRtpEngine;
+
 const activeCallIds = srf.locals.activeCallIds = new Set();
 
 if (process.env.DRACHTIO_HOST) {
