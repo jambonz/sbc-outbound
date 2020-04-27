@@ -38,11 +38,13 @@
     "rtpengine-client": "^0.0.8"
   },
   "devDependencies": {
+    "blue-tape": "^1.0.0",
     "eslint": "^6.8.0",
     "eslint-plugin-promise": "^4.2.1",
     "nyc": "^15.0.1",
     "tap": "^14.10.7",
     "tap-dot": "^2.0.0",
-    "tap-spec": "^5.0.0"
+    "tap-spec": "^5.0.0",
+    "tape": "^5.0.0"
   }
 }
