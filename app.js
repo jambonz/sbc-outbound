@@ -14,7 +14,7 @@ const opts = Object.assign({
   timestamp: () => {return `, "time": "${new Date().toISOString()}"`;}
 }, {level: process.env.JAMBONES_LOGLEVEL || 'info'});
 const logger = require('pino')(opts);
-const StatsCollector = require('jambonz-stats-collector');
+const StatsCollector = require('@jambonz/stats-collector');
 const stats = srf.locals.stats = new StatsCollector(logger);
 const {route, setLogger} = require('./lib/middleware');
 const CallSession = require('./lib/call-session');
@@ -26,7 +26,7 @@ const {performLcr, lookupAllTeamsFQDNs} = require('@jambonz/db-helpers')({
   connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10
 }, logger);
 srf.locals.dbHelpers = {performLcr, lookupAllTeamsFQDNs};
-const {getRtpEngine} = require('jambonz-rtpengine-utils')(process.env.JAMBONES_RTPENGINES.split(','), logger, {
+const {getRtpEngine} = require('@jambonz/rtpengine-utils')(process.env.JAMBONES_RTPENGINES.split(','), logger, {
   emitter: srf.locals.stats
 });
 srf.locals.getRtpEngine = getRtpEngine;
