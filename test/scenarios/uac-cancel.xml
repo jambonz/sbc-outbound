@@ -25,10 +25,10 @@
   <send retrans="500" start_txn="invite">
     <![CDATA[
 
-      INVITE sip:16173333456@jambonz.org SIP/2.0
+      INVITE sip:16173333456@127.0.0.1 SIP/2.0
       Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
       From: sipp <sip:sipp@[local_ip]:[local_port]>;tag=[pid]SIPpTag09[call_number]
-      To: <sip:16173333456@jambonz.org>
+      To: <sip:16173333456@127.0.0.1>
       Call-ID: [call_id]
       CSeq: 1 INVITE
       Contact: sip:sipp@[local_ip]:[local_port]

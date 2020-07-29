@@ -18,14 +18,14 @@ const StatsCollector = require('@jambonz/stats-collector');
 const stats = srf.locals.stats = new StatsCollector(logger);
 const {route, setLogger} = require('./lib/middleware');
 const CallSession = require('./lib/call-session');
-const {performLcr, lookupAllTeamsFQDNs} = require('@jambonz/db-helpers')({
+const {performLcr, lookupAllTeamsFQDNs, lookupAccountBySipRealm} = require('@jambonz/db-helpers')({
   host: process.env.JAMBONES_MYSQL_HOST,
   user: process.env.JAMBONES_MYSQL_USER,
   password: process.env.JAMBONES_MYSQL_PASSWORD,
   database: process.env.JAMBONES_MYSQL_DATABASE,
   connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10
 }, logger);
-srf.locals.dbHelpers = {performLcr, lookupAllTeamsFQDNs};
+srf.locals.dbHelpers = {performLcr, lookupAllTeamsFQDNs, lookupAccountBySipRealm};
 const {getRtpEngine} = require('@jambonz/rtpengine-utils')(process.env.JAMBONES_RTPENGINES.split(','), logger, {
   emitter: srf.locals.stats
 });

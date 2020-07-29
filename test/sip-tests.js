@@ -21,20 +21,6 @@ test('sbc-outbound tests', async(t) => {
 
   try {
     await connect(srf);
-
-    // for now, the docker image for sbc-registrar needs a mysql database..
-    // TODO: figure out how to add that into the docker network and build the schema there
-    /* send a registration from 172.39.0.31 */
-    //await sippUac('uac-register-auth-success.xml', {ip: '172.39.0.31', data_file: 'good_user.csv'});
-    //t.pass('sip user/device registered over udp');
-
-    /* now start a sipp service waiting on 172.39.0.31 for an INVITE */
-    //const p = sippUac('uas.xml', {ip: '172.39.0.31'});
-
-    /* now send an outbound call from the appserver targeted to the user that registered from 172.39.0.31 */
-    //await sippUac('uac-pcap-device-success.xml');
-    //await p;
-    //t.pass('successfully completed outbound call to the registered user/devices');
   
     /* call to unregistered user */
     await sippUac('uac-pcap-device-404.xml');
