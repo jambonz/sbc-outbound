@@ -26,10 +26,10 @@
   <send retrans="500">
     <![CDATA[
 
-      INVITE sip:jane@jambonz.org SIP/2.0
+      INVITE sip:jane@sip.example.com SIP/2.0
       Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
       From: sipp <sip:sipp@[local_ip]:[local_port]>;tag=[pid]SIPpTag09[call_number]
-      To: <sip:jane@jambonz.org>
+      To: <sip:jane@sip.example.com>
       Call-ID: [call_id]
       CSeq: 1 INVITE
       Contact: sip:sipp@[local_ip]:[local_port]
@@ -62,10 +62,10 @@
   <send>
     <![CDATA[
 
-      ACK sip:sip:jane@jambonz.org SIP/2.0
+      ACK sip:sip:jane@sip.example.com SIP/2.0
       [last_Via]
       From: sipp <sip:sipp@[local_ip]:[local_port]>;tag=[pid]SIPpTag09[call_number]
-      To: <sip:sip:jane@jambonz.org>[peer_tag_param]
+      To: <sip:sip:jane@sip.example.com>[peer_tag_param]
       Call-ID: [call_id]
       CSeq: 1 ACK
       Subject: uac-pcap-device-success
