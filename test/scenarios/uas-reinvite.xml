@@ -2,14 +2,60 @@
 <!DOCTYPE scenario SYSTEM "sipp.dtd">
 
 <scenario name="Basic UAS responder">
-  <!-- By adding rrs="true" (Record Route Sets), the route sets         -->
-  <!-- are saved and used for following messages sent. Useful to test   -->
-  <!-- against stateful SIP proxies/B2BUAs.                             -->
+  <recv request="INVITE" crlf="true">
+  </recv>
+
+  <send retrans="500">
+    <![CDATA[
+
+      SIP/2.0 401 Unauthorized
+      [last_Via:]
+      [last_From:]
+      [last_To:];tag=[pid]SIPpTag01[call_number]
+      [last_Call-ID:]
+      [last_CSeq:]
+      WWW-Authenticate: Digest realm="jambonz.org", nonce="4cdbb733645816512687270b83d2ae5d11e4d9d8"
+      Content-Length: 0
+
+    ]]>
+  </send>
+
+  <recv request="ACK"
+        rtd="true"
+        crlf="true">
+  </recv>
+  
+  
   <recv request="INVITE" crlf="true">
     <action>
       <ereg regexp=".*" search_in="hdr" header="Subject:" assign_to="1" />
+      <verifyauth assign_to="authvalid" username="foo" password="bar" />
     </action>
   </recv>
+  <nop hide="true" test="authvalid" next="goodauth" />
+
+  <send retrans="500">
+    <![CDATA[
+
+      SIP/2.0 403 Forbidden
+      [last_Via:]
+      [last_From:]
+      [last_To:];tag=[pid]SIPpTag01[call_number]
+      [last_Call-ID:]
+      [last_CSeq:]
+      Contact: <sip:[local_ip]:[local_port];transport=[transport]>;expires=60
+      Content-Type: application/sdp
+      Content-Length: 0
+
+    ]]>
+  </send>
+
+  <recv request="ACK" next="endit"
+        rtd="true"
+        crlf="true">
+  </recv>
+
+  <label id="goodauth"/>
 
   <send>
     <![CDATA[
@@ -93,7 +139,7 @@
   <recv request="BYE">
   </recv>
 
-  <send next="2">
+  <send>
     <![CDATA[
 
       SIP/2.0 200 OK
@@ -108,23 +154,7 @@
     ]]>
   </send>
 
-  <label id="1"/>
-  <send>
-  <![CDATA[
-
-    SIP/2.0 200 OK
-    [last_Via:]
-    [last_From:]
-    [last_To:]
-    [last_Call-ID:]
-    [last_CSeq:]
-    Contact: <sip:[local_ip]:[local_port];transport=[transport]>
-    Content-Length: 0
-
-  ]]>
-</send>
-
-<label id="2"/>
+<label id="endit"/>
 
 </scenario>
 
