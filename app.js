@@ -26,6 +26,12 @@ const {performLcr, lookupAllTeamsFQDNs, lookupAccountBySipRealm} = require('@jam
   connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10
 }, logger);
 srf.locals.dbHelpers = {performLcr, lookupAllTeamsFQDNs, lookupAccountBySipRealm};
+const {createHash, retrieveHash} = require('@jambonz/realtimedb-helpers')({
+  host: process.env.JAMBONES_REDIS_HOST || 'localhost',
+  port: process.env.JAMBONES_REDIS_PORT || 6379
+}, logger);
+srf.locals.realtimeDbHelpers = {createHash, retrieveHash};
+
 const {getRtpEngine} = require('@jambonz/rtpengine-utils')(process.env.JAMBONES_RTPENGINES.split(','), logger, {
   emitter: srf.locals.stats
 });

@@ -54,6 +54,10 @@ test('sbc-outbound tests', async(t) => {
     await sippUac('uac-pcap-carrier-success-reinvite.xml');
     t.pass('successfully handled reinvite during lcr outdial');
 
+    /* invite to sipUri that challenges */
+    await sippUac('uac-sip-uri-auth-success.xml');
+    t.pass('successfully connected to sip uri that requires auth');
+    
     srf.disconnect();
   } catch (err) {
     console.error(err);

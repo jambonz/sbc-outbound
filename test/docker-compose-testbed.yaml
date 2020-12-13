@@ -89,3 +89,13 @@ services:
     networks:
       sbc-outbound:
         ipv4_address: 172.39.0.23
+
+  sip-uri-auth:
+    image: drachtio/sipp:latest
+    command: sipp -sf /tmp/uas-auth.xml
+    volumes:
+      - ./scenarios:/tmp
+    tty: true
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.24
