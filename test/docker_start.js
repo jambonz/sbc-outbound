@@ -9,7 +9,7 @@ test('starting docker network..', (t) => {
     setTimeout(() => {
       t.pass('docker started');
       t.end(err);  
-    }, 10000);
+    }, 15000);
   });
 });
 
