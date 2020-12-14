@@ -1,5 +1,5 @@
 const { spawn } = require('child_process');
-const debug = require('debug')('test:sipp');
+const debug = require('debug')('jambonz:ci');
 let network;
 const obj = {};
 let output = '';
@@ -46,7 +46,7 @@ obj.sippUac = (file, opts) => {
     'sbc'
   ]);
 
-  //console.log(`args: ${args}`);
+  debug(`args: ${args}`);
   clearOutput();
 
   return new Promise((resolve, reject) => {
