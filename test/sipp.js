@@ -67,8 +67,8 @@ obj.sippUac = (file, opts) => {
       debug(`stdout: ${data}`);
       addOutput(data.toString());
     });
-    child_process.stdout.on('data', (data) => {
-      debug(`stdout: ${data}`);
+    child_process.stderr.on('data', (data) => {
+      debug(`stderr: ${data}`);
       addOutput(data.toString());
     });
   });
