@@ -13,6 +13,8 @@ jobs:
         with:
           node-version: 12
       - run: npm install
-      - run: DEBUG=jambonz:* npm test
+      - run: docker pull drachtio/sipp:latest
+      - run: npm run eslint
+      - run: npm test
 
  
