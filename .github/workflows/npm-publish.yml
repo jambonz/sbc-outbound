@@ -12,11 +12,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: docker pull drachtio/sipp:latest
       - run: npm install
       - run: npm run jslint
-      - name: run tests
-        run: DEBUG=jambonz:* npm test
-        shell: bash {0}
+      - run: pwd
+      - run: DEBUG=jambonz:* npm test
 
  
