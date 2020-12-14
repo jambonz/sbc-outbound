@@ -1,8 +1,8 @@
 const test = require('blue-tape');
 const { output, sippUac } = require('./sipp')('test_sbc-outbound');
 const {execSync} = require('child_process');
-const pwd = process.env.TRAVIS ? '' : '-p$MYSQL_ROOT_PASSWORD';
 const debug = require('debug')('jambonz:sbc-outbound');
+const pwd = '-p$MYSQL_ROOT_PASSWORD';
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -31,24 +31,24 @@ test('sbc-outbound tests', async(t) => {
     t.pass('successfully completed outbound call to configured sip trunk');
 
     // re-rack test data
-    execSync(`mysql -h localhost -u root ${pwd} -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
-    execSync(`mysql -h localhost -u root ${pwd} -D jambones_test < ${__dirname}/db/populate-test-data2.sql`);
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/populate-test-data2.sql`);
 
     /* call to PSTN with lcr configured */
     await sippUac('uac-pcap-carrier-success.xml');
     t.pass('successfully completed outbound lcr carrier with crankback after failure');
 
     // re-rack test data
-    execSync(`mysql -h localhost -u root ${pwd} -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
-    execSync(`mysql -h localhost -u root ${pwd} -D jambones_test < ${__dirname}/db/populate-test-data3.sql`);
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/populate-test-data3.sql`);
 
     /* call to PSTN where caller hangs up during outdial */
     await sippUac('uac-cancel.xml');
     t.pass('successfully handled caller hangup during lcr outdial');
 
     // re-rack test data
-    execSync(`mysql -h localhost -u root ${pwd} -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
-    execSync(`mysql -h localhost -u root ${pwd} -D jambones_test < ${__dirname}/db/populate-test-data4.sql`);
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/populate-test-data4.sql`);
 
     /* reinvite after call established */
     await sippUac('uac-pcap-carrier-success-reinvite.xml');

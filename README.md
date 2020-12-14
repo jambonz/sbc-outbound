@@ -1,4 +1,4 @@
-# sbc-outbound [![Build Status](https://secure.travis-ci.org/jambonz/sbc-outbound.png)](http://travis-ci.org/jambonz/sbc-outbound)
+# sbc-outbound ![Build Status](https://github.com/jambonz/sbc-outbound/workflows/CI/badge.svg)
 
 This application provides a part of the SBC (Session Border Controller) functionality of jambonz.  It handles outbound INVITE requests from the cpaas application server that is going to carrier sip trunks or registered sip users/devices, including webrtc applications. 
 
