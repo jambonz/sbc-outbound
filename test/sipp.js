@@ -28,7 +28,7 @@ obj.sippUac = (file, opts) => {
   opts = opts || {};
   const cmd = 'docker';
   let args = [
-    'run', '-ti', '--rm', '--net', `${network}`
+    'run', '--rm', '--net', `${network}`
   ]
   .concat(opts.ip ? ['--ip', opts.ip] : [])
   .concat([
