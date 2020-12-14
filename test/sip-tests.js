@@ -23,6 +23,7 @@ test('sbc-outbound tests', async(t) => {
     await connect(srf);
   
     /* call to unregistered user */
+    debug('successfully connected to drachtio server');
     await sippUac('uac-pcap-device-404.xml');
     t.pass('return 404 to outbound attempt to unregistered user/device');
 
