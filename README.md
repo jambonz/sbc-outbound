@@ -4,77 +4,73 @@ This application provides a part of the SBC (Session Border Controller) function
 
 ## Configuration
 
-Configuration is provided via the [npmjs config](https://www.npmjs.com/package/config) package.  Much of the configuration is standard "where is drachtio?, where is rtpengine?, where is redis?" type of thing.  This application also needs information about the sip trunk to send PSTN calls out on.  In the initial release, only a single outbound SIP trunk is supported.
+Configuration is provided via environment variables:
 
-The following elements make up the configuration for the application:
-##### outbound sip trunk
-```
-"trunks": {
-  "outbound": {
-    "name": "carrier1",
-    "host": "sip:172.39.0.20"
-  }
-},
-```
-The sip uri specifies the sip trunk uri to send PSTN calls to.  All outbound PSTN calls from the cpaas application server are expected to be in E.164 format with a leading plus (+) sign.  Outbound sip uris that do not begin with a '+' are assumed to be calls to registered devices/users.
+| variable | meaning | required?|
+|----------|----------|---------|
+|DRACHTIO_HOST| ip address of drachtio server (typically '127.0.0.1')|yes|
+|DRACHTIO_PORT| listening port of drachtio server for control connections (typically 9022)|yes|
+|DRACHTIO_SECRET| shared secret|yes|
+|ENABLE_METRICS| if 1, metrics will be generated|no|
+|JAMBONES_LOGLEVEL| log level for application, 'info' or 'debug'|no|
+|JAMBONES_MYSQL_HOST| mysql host|yes|
+|JAMBONES_MYSQL_USER| mysql username|yes|
+|JAMBONES_MYSQL_PASSWORD|  mysql password|yes|
+|JAMBONES_MYSQL_DATABASE| mysql data|yes|
+|JAMBONES_MYSQL_CONNECTION_LIMIT| mysql connection limit |no|
+|JAMBONES_NETWORK_CIDR| CIDR of private network that feature server is running in (e.g. '172.31.0.0/16')|yes|
+|JAMBONES_REDIS_HOST| redis host|yes|
+|JAMBONES_REDIS_PORT|redis port|yes|
+|JAMBONES_RTPENGINES| commans-separated list of ip:ng-port for rtpengines (e.g. '172.31.32.10:22222')|yes|
+|JAMBONES_SBCS| list of IP addresses (on the internal network) of SBCs, comma-separated|yes|
+|STATS_HOST| ip address of metrics host (usually '127.0.0.1' since telegraf is installed locally|no|
+|STATS_PORT| listening port for metrics host|no|
+|STATS_PROTOCOL| 'tcp' or 'udp'|no|
+|STATS_TELEGRAF| if 1, metrics will be generated in telegraf format|no|
 
-##### drachtio server location
+### running under pm2
+Typically, this application runs under [pm2](https://pm2.io) using an [ecosystem.config.js](https://pm2.keymetrics.io/docs/usage/application-declaration/) file similar to this:
+```js
+module.exports = {
+  apps : [
+  {
+    name: 'sbc-outbound',
+    cwd: '/home/admin/apps/sbc-outbound',
+    script: 'app.js',
+    instance_var: 'INSTANCE_ID',
+    out_file: '/home/admin/.pm2/logs/jambonz-sbc-outbound.log',
+    err_file: '/home/admin/.pm2/logs/jambonz-sbc-outbound.log',
+    exec_mode: 'fork',
+    instances: 1,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '1G',    env: {
+     NODE_ENV: 'production',
+      JAMBONES_LOGLEVEL: 'info',
+      DRACHTIO_HOST: '127.0.0.1',
+      DRACHTIO_PORT: 9022,
+      DRACHTIO_SECRET: 'cymru',
+      JAMBONES_RTPENGINES: '172.31.32.10:22222',
+      JAMBONES_MYSQL_HOST: 'aurora-cluster-jambonz.cluster-xxxxxxxxxxxxx.us-west-1.rds.amazonaws.com',
+      JAMBONES_MYSQL_USER: 'admin',
+      JAMBONES_MYSQL_PASSWORD: 'JambonzR0ck$',
+      JAMBONES_MYSQL_DATABASE: 'jambones',
+      JAMBONES_MYSQL_CONNECTION_LIMIT: 10,
+      JAMBONES_REDIS_HOST: 'jambonz.zzzzzzz.0001.usw1.cache.amazonaws.com',
+      JAMBONES_REDIS_PORT: 6379,
+      ENABLE_METRICS: 1,
+      STATS_HOST: '127.0.0.1',
+      STATS_PORT: 8125,
+      STATS_PROTOCOL: 'tcp',
+      STATS_TELEGRAF: 1,
+    }
+  }]
+};
 ```
-"drachtio": {
-  "port": 3001,
-  "secret": "cymru"
-},
-```
-the `drachtio` object specifies the port to listen on for tcp connections from drachtio servers as well as the shared secret that is used to authenticate to the server.
 
-> Note: either inbound or [outbound connections](https://drachtio.org/docs#outbound-connections) may be used, depending on the configuration supplied.  In production, it is the intent to use outbound connections for easier centralization and clustering of application logic, while inbound connections are used for the automated test suite.
 
-##### rtpengine location
-```
-  "rtpengine": {
-    "host": "127.0.0.1",
-    "port": 22222
-  },
-```
-the `rtpengine` object specifies the location of the rtpengine, which will typically be running on the same server as drachtio.
-
-##### redis location
-```
-  "redis": {
-    "port": 6379,
-    "host": "127.0.0.1"
-  },
-```
-the `redis` object specifies the ip/dns and port that redis is listening on.
-
-##### application log level
-```
-  "logging": {
-    "level": "info"
-  }
-```
-##### transcoding options
-The transcoding options for rtpengine are found in the configuration file, however these should not need to be modified.
-```
-  "transcoding": {
-  "rtpCharacteristics" : {
-      "transport protocol": "RTP/AVP",
-      "DTLS": "off",
-      "SDES": "off",
-      "ICE": "remove",
-      "rtcp-mux": ["demux"]
-  },
-  "srtpCharacteristics": {
-      "transport-protocol": "UDP/TLS/RTP/SAVPF",
-      "ICE": "force",
-      "SDES": "off",
-      "flags": ["generate mid", "SDES-no"],
-      "rtcp-mux": ["require"]
-  } 
-}
-```
 #### Running the test suite
-To run the included test suite, you will need to have a mysql server installed on your laptop/server. You will need to set the MYSQL_ROOT_PASSWORD env variable to the mysql root password before running the tests.  The test suite creates a database named 'jambones_test' in your mysql server to run the tests against, and removes it when done.
+To run the included test suite, you will need to have docker installed on your laptop.
 ```
-MYSQL_ROOT_PASSWORD=foobar npm test
+npm test
 ```
