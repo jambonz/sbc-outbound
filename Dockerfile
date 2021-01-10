@@ -1,9 +1,8 @@
 FROM node:alpine as builder
-RUN apk update && apk add --no-cache python make g++
 WORKDIR /opt/app/
 COPY package.json ./
 RUN npm install
-RUN npm prune
+RUN npm prune --production
 
 FROM node:alpine as app
 WORKDIR /opt/app
