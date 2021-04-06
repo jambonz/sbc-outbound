@@ -35,8 +35,7 @@
     "drachtio-fn-b2b-sugar": "^0.0.12",
     "drachtio-srf": "^4.4.46",
     "jambonz-mw-registrar": "^0.1.3",
-    "pino": "^6.11.0",
-    "rtpengine-client": "^0.1.1"
+    "pino": "^6.11.0"
   },
   "devDependencies": {
     "blue-tape": "^1.0.0",
