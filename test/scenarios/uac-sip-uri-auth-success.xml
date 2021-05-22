@@ -35,6 +35,8 @@
       Contact: sip:sipp@[local_ip]:[local_port]
       Max-Forwards: 70
       Subject: uac-sip-uri-auth-success
+      X-Account-Sid: ed649e33-e771-403a-8c99-1780eabbc803
+      X-Call-Sid: fff49e33-e771-403a-8c99-1780eabbc803
       Content-Type: application/sdp
       Content-Length: [len]
 
@@ -86,6 +88,8 @@
       [authentication username=foo password=bar]
       Max-Forwards: 70
       Subject: uac-sip-uri-auth-success
+      X-Account-Sid: ed649e33-e771-403a-8c99-1780eabbc803
+      X-Call-Sid: fff49e33-e771-403a-8c99-1780eabbc803
       Content-Type: application/sdp
       Content-Length: [len]
 

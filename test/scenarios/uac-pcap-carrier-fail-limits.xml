@@ -15,8 +15,8 @@
       Contact: sip:sipp@[local_ip]:[local_port]
       Max-Forwards: 70
       X-Account-Sid: ed649e33-e771-403a-8c99-1780eabbc803
-      X-Call-Sid: fff49e33-e771-403a-8c99-1780eabbc803
-      Subject: uac-pcap-carrier-success
+      X-Call-Sid: ff49e33-e771-403a-8c99-1780eabbc803
+      Subject: uac-pcap-carrier-fail-limits
       Content-Type: application/sdp
       Content-Length: [len]
 
@@ -36,55 +36,23 @@
   <recv response="100" optional="true">
   </recv>
 
-  <recv response="180" optional="true">
-  </recv>
-
-  <recv response="200" rtd="true" crlf="true">
+  <recv response="503" rtd="true" crlf="true">
   </recv>
 
   <send>
     <![CDATA[
 
       ACK sip:sip:+16173333456@127.0.0.1 SIP/2.0
-      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
+      [last_Via]
       From: sipp <sip:sipp@[local_ip]:[local_port]>;tag=[pid]SIPpTag09[call_number]
       To: <sip:sip:+16173333456@127.0.0.1>[peer_tag_param]
       Call-ID: [call_id]
       CSeq: 1 ACK
-      Subject: uac-pcap-carrier-success
+      Subject: uac-pcap-carrier-fail-limits
       Content-Length: 0
 
     ]]>
   </send>
 
-  <!-- Play a pre-recorded PCAP file (RTP stream)                       -->
-  <nop>
-    <action>
-      <exec play_pcap_audio="pcap/g711a.pcap"/>
-    </action>
-  </nop>
-
-  <!-- Pause briefly      -->
-  <pause milliseconds="2000"/>
-
-  <!-- The 'crlf' option inserts a blank line in the statistics report. -->
-  <send retrans="500">
-    <![CDATA[
-
-      BYE sip:sip:+16173333456@127.0.0.1 SIP/2.0
-      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
-      From: sipp <sip:sipp@[local_ip]:[local_port]>;tag=[pid]SIPpTag09[call_number]
-      To: <sip:sip:+16173333456@127.0.0.1>[peer_tag_param]
-      Call-ID: [call_id]
-      CSeq: 2 BYE
-      Max-Forwards: 70
-      Subject: uac-pcap-carrier-success
-      Content-Length: 0
-
-    ]]>
-  </send>
-
-  <recv response="200" crlf="true">
-  </recv>
 
 </scenario>
