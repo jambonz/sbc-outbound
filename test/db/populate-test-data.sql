@@ -17,7 +17,7 @@ values ('f4e1848d-3ff8-40eb-b9c1-30e1ef053f94','ed649e33-e771-403a-8c99-1780eabb
 insert into account_products(account_product_sid, account_subscription_sid, product_sid,quantity)
 values ('f23ff996-6534-4aba-8666-4b347391eca2', 'f4e1848d-3ff8-40eb-b9c1-30e1ef053f94', 'c4403cdb-8e75-4b27-9726-7d8315e3216d', 10);
 
-insert into voip_carriers (voip_carrier_sid, name) values ('287c1452-620d-4195-9f19-c9814ef90d78', 'westco');
+insert into voip_carriers (voip_carrier_sid, name, service_provider_sid) values ('287c1452-620d-4195-9f19-c9814ef90d78', 'westco', '3f35518f-5a0d-4c2e-90a5-2407bb3b36f0');
 insert into sip_gateways (sip_gateway_sid, voip_carrier_sid, ipv4, inbound, outbound) 
 values ('124a5339-c62c-4075-9e19-f4de70a96597', '287c1452-620d-4195-9f19-c9814ef90d78', '172.39.0.20', true, true);
 insert into sip_gateways (sip_gateway_sid, voip_carrier_sid, ipv4, port, inbound, outbound) 
