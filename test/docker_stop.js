@@ -1,4 +1,4 @@
-const test = require('blue-tape');
+const test = require('tape');
 //const test = require('tape').test ;
 const exec = require('child_process').exec ;
 

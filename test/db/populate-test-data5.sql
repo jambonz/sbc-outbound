@@ -15,10 +15,11 @@ values ('ed649e33-e771-403a-8c99-1780eabbc803', '3f35518f-5a0d-4c2e-90a5-2407bb3
 insert into account_subscriptions(account_subscription_sid, account_sid, pending)
 values ('f4e1848d-3ff8-40eb-b9c1-30e1ef053f94','ed649e33-e771-403a-8c99-1780eabbc803',0);
 insert into account_products(account_product_sid, account_subscription_sid, product_sid,quantity)
-values ('f23ff996-6534-4aba-8666-4b347391eca2', 'f4e1848d-3ff8-40eb-b9c1-30e1ef053f94', 'c4403cdb-8e75-4b27-9726-7d8315e3216d', 10);
+values ('f23ff996-6534-4aba-8666-4b347391eca2', 'f4e1848d-3ff8-40eb-b9c1-30e1ef053f94', 'c4403cdb-8e75-4b27-9726-7d8315e3216d', 0);
 
-insert into voip_carriers (voip_carrier_sid, name, service_provider_sid) values ('287c1452-620d-4195-9f19-c9814ef90d78', 'westco', '3f35518f-5a0d-4c2e-90a5-2407bb3b36f0');
+
+-- one carrier, uas script expecting a reinvite
+insert into voip_carriers (voip_carrier_sid, name, service_provider_sid, e164_leading_plus, requires_register, register_username, register_sip_realm, register_password) 
+values ('287c1452-620d-4195-9f19-c9814ef90d78', 'westco', '3f35518f-5a0d-4c2e-90a5-2407bb3b36f0', 0, 1, 'foo', 'jambonz.org', 'bar');
 insert into sip_gateways (sip_gateway_sid, voip_carrier_sid, ipv4, inbound, outbound) 
-values ('124a5339-c62c-4075-9e19-f4de70a96597', '287c1452-620d-4195-9f19-c9814ef90d78', '172.39.0.20', true, true);
-insert into sip_gateways (sip_gateway_sid, voip_carrier_sid, ipv4, port, inbound, outbound) 
-values ('efbc4830-57cd-4c78-a56f-d64fdf210fe8', '287c1452-620d-4195-9f19-c9814ef90d78', '3.3.3.3', 5062, true, false);
+values ('124a5339-c62c-4075-9e19-f4de70a96597', '287c1452-620d-4195-9f19-c9814ef90d78', '172.39.0.23', true, true);

@@ -116,3 +116,12 @@ services:
     networks:
       sbc-outbound:
         ipv4_address: 172.39.0.24
+
+  influxdb:
+    image: influxdb:1.8-alpine
+    ports:
+      - "8086:8086"
+    networks:
+      sbc-outbound:
+        ipv4_address: 172.39.0.90
+        

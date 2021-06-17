@@ -1,12 +1,18 @@
-const test = require('blue-tape');
+const test = require('tape');
 const { output, sippUac } = require('./sipp')('test_sbc-outbound');
 const {execSync} = require('child_process');
 const debug = require('debug')('jambonz:sbc-outbound');
-const pwd = '-p$MYSQL_ROOT_PASSWORD';
+const consoleLogger = {error: console.error, info: console.log, debug: console.log};
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
 });
+
+function waitFor(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms * 1000);
+  });
+}
 
 function connect(connectable) {
   return new Promise((resolve, reject) => {
@@ -18,6 +24,7 @@ function connect(connectable) {
 
 test('sbc-outbound tests', async(t) => {
   const {srf} = require('../app');
+  const { queryCdrs } = srf.locals;
 
   try {
     await connect(srf);
@@ -58,7 +65,21 @@ test('sbc-outbound tests', async(t) => {
     /* invite to sipUri that challenges */
     await sippUac('uac-sip-uri-auth-success.xml');
     t.pass('successfully connected to sip uri that requires auth');
+  
+    // re-rack test data
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/populate-test-data5.sql`);
     
+    /* fails when session limit exceeded */
+    await sippUac('uac-pcap-carrier-fail-limits.xml');
+    t.pass('fails when max calls in progress');
+      
+    await waitFor(10);
+
+    const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
+    //console.log(`cdrs: ${JSON.stringify(res)}`);
+    t.ok(res.total === 6, 'wrote 6 cdrs');
+
     srf.disconnect();
   } catch (err) {
     console.error(err);
