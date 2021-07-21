@@ -3,5 +3,6 @@
   "DTLS": "off",
   "SDES": "off",
   "ICE": "remove",
+  "flags": ["media handover"],
   "rtcp-mux": ["demux"]
 }
