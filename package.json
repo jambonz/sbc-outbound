@@ -30,7 +30,7 @@
     "@jambonz/db-helpers": "^0.6.12",
     "@jambonz/mw-registrar": "0.2.1",
     "@jambonz/realtimedb-helpers": "^0.4.3",
-    "@jambonz/rtpengine-utils": "^0.1.12",
+    "@jambonz/rtpengine-utils": "^0.1.14",
     "@jambonz/stats-collector": "^0.1.5",
     "@jambonz/time-series": "^0.1.5",
     "debug": "^4.3.1",
