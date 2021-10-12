@@ -6,9 +6,12 @@ assert.ok(process.env.JAMBONES_MYSQL_HOST &&
 assert.ok(process.env.JAMBONES_REDIS_HOST, 'missing JAMBONES_REDIS_HOST env var');
 assert.ok(process.env.DRACHTIO_PORT || process.env.DRACHTIO_HOST, 'missing DRACHTIO_PORT env var');
 assert.ok(process.env.DRACHTIO_SECRET, 'missing DRACHTIO_SECRET env var');
+assert.ok(process.env.JAMBONES_NETWORK_CIDR, 'missing JAMBONES_NETWORK_CIDR env var');
 
 const Srf = require('drachtio-srf');
 const srf = new Srf('sbc-outbound');
+const CIDRMatcher = require('cidr-matcher');
+const matcher = new CIDRMatcher([process.env.JAMBONES_NETWORK_CIDR]);
 const opts = Object.assign({
   timestamp: () => {return `, "time": "${new Date().toISOString()}"`;}
 }, {level: process.env.JAMBONES_LOGLEVEL || 'info'});
@@ -73,17 +76,30 @@ const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger
   host: process.env.JAMBONES_REDIS_HOST,
   port: process.env.JAMBONES_REDIS_PORT || 6379
 });
-const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], logger, {emitter: stats});
+const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], logger, {
+  emitter: stats,
+  dtmfListenPort: process.env.DTMF_LISTEN_PORT || 22225
+});
 srf.locals.getRtpEngine = getRtpEngine;
 
 if (process.env.DRACHTIO_HOST) {
   srf.connect({host: process.env.DRACHTIO_HOST, port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET });
   srf.on('connect', (err, hp) => {
     logger.info(`connected to drachtio listening on ${hp}`);
-    const last = hp.split(',').pop();
-    const arr = /^(.*)\/(.*):(\d+)$/.exec(last);
-    logger.info(`connected to drachtio listening on ${hp}: adding ${arr[2]} to sbc_addresses table`);
-    srf.locals.sipAddress = arr[2];
+
+    const hostports = hp.split(',');
+    for (const hp of hostports) {
+      const arr = /^(.*)\/(.*):(\d+)$/.exec(hp);
+      if (arr && 'udp' === arr[1] && !matcher.contains(arr[2])) {
+        logger.info(`sbc public address: ${arr[2]}`);
+        srf.locals.sipAddress = arr[2];
+      }
+      else if (arr && 'tcp' === arr[1] && matcher.contains(arr[2])) {
+        const hostport = `${arr[2]}:${arr[3]}`;
+        logger.info(`sbc private address: ${hostport}`);
+        srf.locals.privateSipAddress = hostport;
+      }
+    }
   });
 }
 else {
