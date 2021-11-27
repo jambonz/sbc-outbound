@@ -36,7 +36,9 @@ const {
   lookupAllTeamsFQDNs,
   lookupAccountBySipRealm,
   lookupAccountBySid,
-  lookupAccountCapacitiesBySid
+  lookupAccountCapacitiesBySid,
+  lookupSipGatewaysByCarrier,
+  lookupCarrierBySid
 } = require('@jambonz/db-helpers')({
   host: process.env.JAMBONES_MYSQL_HOST,
   user: process.env.JAMBONES_MYSQL_USER,
@@ -63,7 +65,9 @@ srf.locals = {...srf.locals,
     lookupAllTeamsFQDNs,
     lookupAccountBySipRealm,
     lookupAccountBySid,
-    lookupAccountCapacitiesBySid
+    lookupAccountCapacitiesBySid,
+    lookupSipGatewaysByCarrier,
+    lookupCarrierBySid
   },
   realtimeDbHelpers: {
     createHash,
