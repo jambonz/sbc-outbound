@@ -27,22 +27,22 @@
     "jslint": "eslint app.js lib"
   },
   "dependencies": {
-    "@jambonz/db-helpers": "^0.6.13",
+    "@jambonz/db-helpers": "^0.6.14",
     "@jambonz/mw-registrar": "0.2.1",
-    "@jambonz/realtimedb-helpers": "^0.4.8",
-    "@jambonz/rtpengine-utils": "^0.1.17",
+    "@jambonz/realtimedb-helpers": "^0.4.9",
+    "@jambonz/rtpengine-utils": "^0.1.21",
     "@jambonz/stats-collector": "^0.1.6",
-    "@jambonz/time-series": "^0.1.5",
+    "@jambonz/time-series": "^0.1.6",
     "cidr-matcher": "^2.1.1",
-    "debug": "^4.3.2",
+    "debug": "^4.3.3",
     "drachtio-fn-b2b-sugar": "^0.0.12",
     "drachtio-srf": "^4.4.59",
-    "pino": "^6.13.3"
+    "pino": "^7.4.1"
   },
   "devDependencies": {
-    "eslint": "^7.18.0",
-    "eslint-plugin-promise": "^4.2.1",
+    "eslint": "^7.32.0",
+    "eslint-plugin-promise": "^5.1.1",
     "nyc": "^15.1.0",
-    "tape": "^5.2.2"
+    "tape": "^5.3.2"
   }
 }
