@@ -11,7 +11,6 @@ assert.ok(process.env.JAMBONES_NETWORK_CIDR, 'missing JAMBONES_NETWORK_CIDR env 
 const Srf = require('drachtio-srf');
 const srf = new Srf('sbc-outbound');
 const CIDRMatcher = require('cidr-matcher');
-const matcher = new CIDRMatcher([process.env.JAMBONES_NETWORK_CIDR]);
 const opts = Object.assign({
   timestamp: () => {return `, "time": "${new Date().toISOString()}"`;}
 }, {level: process.env.JAMBONES_LOGLEVEL || 'info'});
@@ -50,6 +49,12 @@ const {createHash, retrieveHash, incrKey, decrKey, retrieveSet} = require('@jamb
   host: process.env.JAMBONES_REDIS_HOST || 'localhost',
   port: process.env.JAMBONES_REDIS_PORT || 6379
 }, logger);
+
+const cidrs = process.env.JAMBONES_NETWORK_CIDR
+  .split(',')
+  .map((s) => s.trim());
+logger.info({cidrs}, 'internal network CIDRs');
+const matcher = new CIDRMatcher(cidrs);
 
 const activeCallIds = new Map();
 
