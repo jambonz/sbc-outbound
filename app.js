@@ -91,7 +91,7 @@ const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], lo
 });
 srf.locals.getRtpEngine = getRtpEngine;
 
-if (process.env.DRACHTIO_HOST) {
+if (process.env.DRACHTIO_HOST && !process.env.K8S) {
   srf.connect({host: process.env.DRACHTIO_HOST, port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET });
   srf.on('connect', (err, hp) => {
     logger.info(`connected to drachtio listening on ${hp}`);
@@ -112,6 +112,7 @@ if (process.env.DRACHTIO_HOST) {
   });
 }
 else {
+  logger.info(`listening in outbound mode on port ${process.env.DRACHTIO_PORT}`);
   srf.listen({port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET});
 }
 if (process.env.NODE_ENV === 'test') {
