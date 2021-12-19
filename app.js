@@ -127,6 +127,11 @@ srf.invite((req, res) => {
   session.connect();
 });
 
+const PORT = process.env.HTTP_PORT || 3000;
+const getCount = () => activeCallIds.size;
+const healthCheck = require('@jambonz/http-health-check');
+healthCheck({port: PORT, logger, path: '/', fn: getCount});
+
 /* update call stats periodically */
 setInterval(() => {
   stats.gauge('sbc.sip.calls.count', activeCallIds.size, ['direction:outbound']);
