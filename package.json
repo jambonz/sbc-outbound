@@ -37,7 +37,7 @@
     "debug": "^4.3.3",
     "drachtio-fn-b2b-sugar": "^0.0.12",
     "drachtio-srf": "^4.4.59",
-    "pino": "^7.4.1"
+    "pino": "^7.5.0"
   },
   "devDependencies": {
     "eslint": "^7.32.0",
