@@ -11,7 +11,6 @@ assert.ok(process.env.JAMBONES_NETWORK_CIDR, 'missing JAMBONES_NETWORK_CIDR env 
 const Srf = require('drachtio-srf');
 const srf = new Srf('sbc-outbound');
 const CIDRMatcher = require('cidr-matcher');
-const matcher = new CIDRMatcher([process.env.JAMBONES_NETWORK_CIDR]);
 const opts = Object.assign({
   timestamp: () => {return `, "time": "${new Date().toISOString()}"`;}
 }, {level: process.env.JAMBONES_LOGLEVEL || 'info'});
@@ -51,6 +50,12 @@ const {createHash, retrieveHash, incrKey, decrKey, retrieveSet} = require('@jamb
   port: process.env.JAMBONES_REDIS_PORT || 6379
 }, logger);
 
+const cidrs = process.env.JAMBONES_NETWORK_CIDR
+  .split(',')
+  .map((s) => s.trim());
+logger.info({cidrs}, 'internal network CIDRs');
+const matcher = new CIDRMatcher(cidrs);
+
 const activeCallIds = new Map();
 
 srf.locals = {...srf.locals,
@@ -86,7 +91,7 @@ const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], lo
 });
 srf.locals.getRtpEngine = getRtpEngine;
 
-if (process.env.DRACHTIO_HOST) {
+if (process.env.DRACHTIO_HOST && !process.env.K8S) {
   srf.connect({host: process.env.DRACHTIO_HOST, port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET });
   srf.on('connect', (err, hp) => {
     logger.info(`connected to drachtio listening on ${hp}`);
@@ -107,6 +112,7 @@ if (process.env.DRACHTIO_HOST) {
   });
 }
 else {
+  logger.info(`listening in outbound mode on port ${process.env.DRACHTIO_PORT}`);
   srf.listen({port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET});
 }
 if (process.env.NODE_ENV === 'test') {
@@ -120,6 +126,11 @@ srf.invite((req, res) => {
   const session = new CallSession(logger, req, res);
   session.connect();
 });
+
+const PORT = process.env.HTTP_PORT || 3000;
+const getCount = () => activeCallIds.size;
+const healthCheck = require('@jambonz/http-health-check');
+healthCheck({port: PORT, logger, path: '/', fn: getCount});
 
 /* update call stats periodically */
 setInterval(() => {
@@ -137,11 +148,13 @@ const arrayCompare = (a, b) => {
   return true;
 };
 
-/* update rtpengines periodically */
-if (process.env.JAMBONES_RTPENGINES) {
-  setRtpEngines([process.env.JAMBONES_RTPENGINES]);
+const serviceName = process.env.JAMBONES_RTPENGINES || process.env.K8S_RTPENGINE_SERVICE_NAME;
+if (serviceName) {
+  logger.info(`rtpengine(s) will be found at: ${serviceName}`);
+  setRtpEngines([serviceName]);
 }
 else {
+  /* update rtpengines periodically */
   const getActiveRtpServers = async() => {
     try {
       const set = await retrieveSet(setNameRtp);
