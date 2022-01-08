@@ -37,6 +37,7 @@
       Subject: uac-pcap-device-success
       X-Account-Sid: ed649e33-e771-403a-8c99-1780eabbc803
       X-Call-Sid: ff649e33-e771-403a-8c99-1780eabbc803
+      X-Jambonz-Routing: user
       Content-Type: application/sdp
       Content-Length: [len]
 

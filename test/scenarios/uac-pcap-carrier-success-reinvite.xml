@@ -17,6 +17,7 @@
       Subject: uac-pcap-carrier-success
       X-Account-Sid: ed649e33-e771-403a-8c99-1780eabbc803
       X-Call-Sid: fff49e33-e771-403a-8c99-1780eabbc803
+      X-Jambonz-Routing: phone
       Content-Type: application/sdp
       Content-Length: [len]
 

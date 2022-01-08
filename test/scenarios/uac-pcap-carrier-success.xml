@@ -16,6 +16,7 @@
       Max-Forwards: 70
       X-Account-Sid: ed649e33-e771-403a-8c99-1780eabbc803
       X-Call-Sid: fff49e33-e771-403a-8c99-1780eabbc803
+      X-Jambonz-Routing: phone
       Subject: uac-pcap-carrier-success
       Content-Type: application/sdp
       Content-Length: [len]

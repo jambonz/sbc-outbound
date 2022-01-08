@@ -37,6 +37,7 @@
       Subject: uac-sip-uri-auth-success
       X-Account-Sid: ed649e33-e771-403a-8c99-1780eabbc803
       X-Call-Sid: fff49e33-e771-403a-8c99-1780eabbc803
+      X-Jambonz-Routing: sip
       Content-Type: application/sdp
       Content-Length: [len]
 
@@ -90,6 +91,7 @@
       Subject: uac-sip-uri-auth-success
       X-Account-Sid: ed649e33-e771-403a-8c99-1780eabbc803
       X-Call-Sid: fff49e33-e771-403a-8c99-1780eabbc803
+      X-Jambonz-Routing: sip
       Content-Type: application/sdp
       Content-Length: [len]
 
@@ -126,7 +128,7 @@
       To: <sip:sip:john@jambonz.org>[peer_tag_param]
       [last_Call-ID:]
       CSeq: 2 ACK
-      Subject: uac-sip-uri-auth-success
+      Subject: 
       Content-Length: 0
 
     ]]>

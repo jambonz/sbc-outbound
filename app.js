@@ -45,7 +45,14 @@ const {
   database: process.env.JAMBONES_MYSQL_DATABASE,
   connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10
 }, logger);
-const {createHash, retrieveHash, incrKey, decrKey, retrieveSet} = require('@jambonz/realtimedb-helpers')({
+const {
+  createHash,
+  retrieveHash,
+  incrKey,
+  decrKey,
+  retrieveSet,
+  isMemberOfSet
+} = require('@jambonz/realtimedb-helpers')({
   host: process.env.JAMBONES_REDIS_HOST || 'localhost',
   port: process.env.JAMBONES_REDIS_PORT || 6379
 }, logger);
@@ -78,7 +85,8 @@ srf.locals = {...srf.locals,
     createHash,
     retrieveHash,
     incrKey,
-    decrKey
+    decrKey,
+    isMemberOfSet
   }
 };
 const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger, {

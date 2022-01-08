@@ -35,6 +35,7 @@
       Contact: sip:sipp@[local_ip]:[local_port]
       Max-Forwards: 70
       Subject: uac-pcap-device-success
+      X-Jambonz-Routing: user
       Content-Type: application/sdp
       Content-Length: [len]
 
