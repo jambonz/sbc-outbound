@@ -6,7 +6,7 @@ assert.ok(process.env.JAMBONES_MYSQL_HOST &&
 assert.ok(process.env.JAMBONES_REDIS_HOST, 'missing JAMBONES_REDIS_HOST env var');
 assert.ok(process.env.DRACHTIO_PORT || process.env.DRACHTIO_HOST, 'missing DRACHTIO_PORT env var');
 assert.ok(process.env.DRACHTIO_SECRET, 'missing DRACHTIO_SECRET env var');
-assert.ok(process.env.JAMBONES_NETWORK_CIDR, 'missing JAMBONES_NETWORK_CIDR env var');
+assert.ok(process.env.JAMBONES_NETWORK_CIDR || process.env.K8S, 'missing JAMBONES_NETWORK_CIDR env var');
 
 const Srf = require('drachtio-srf');
 const srf = new Srf('sbc-outbound');
@@ -57,12 +57,6 @@ const {
   port: process.env.JAMBONES_REDIS_PORT || 6379
 }, logger);
 
-const cidrs = process.env.JAMBONES_NETWORK_CIDR
-  .split(',')
-  .map((s) => s.trim());
-logger.info({cidrs}, 'internal network CIDRs');
-const matcher = new CIDRMatcher(cidrs);
-
 const activeCallIds = new Map();
 
 srf.locals = {...srf.locals,
@@ -100,6 +94,12 @@ const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], lo
 srf.locals.getRtpEngine = getRtpEngine;
 
 if (process.env.DRACHTIO_HOST && !process.env.K8S) {
+  const cidrs = process.env.JAMBONES_NETWORK_CIDR
+    .split(',')
+    .map((s) => s.trim());
+  logger.info({cidrs}, 'internal network CIDRs');
+  const matcher = new CIDRMatcher(cidrs);
+
   srf.connect({host: process.env.DRACHTIO_HOST, port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET });
   srf.on('connect', (err, hp) => {
     logger.info(`connected to drachtio listening on ${hp}`);
