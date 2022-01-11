@@ -89,7 +89,8 @@ const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger
 });
 const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], logger, {
   emitter: stats,
-  dtmfListenPort: process.env.DTMF_LISTEN_PORT || 22225
+  dtmfListenPort: process.env.DTMF_LISTEN_PORT || 22225,
+  useWS: process.env.RTPENGINE_USE_WS
 });
 srf.locals.getRtpEngine = getRtpEngine;
 
