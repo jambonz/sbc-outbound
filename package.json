@@ -33,7 +33,7 @@
     "@jambonz/realtimedb-helpers": "^0.4.24",
     "@jambonz/rtpengine-utils": "^0.3.1",
     "@jambonz/stats-collector": "^0.1.6",
-    "@jambonz/time-series": "^0.1.6",
+    "@jambonz/time-series": "^0.1.7",
     "cidr-matcher": "^2.1.1",
     "debug": "^4.3.3",
     "drachtio-fn-b2b-sugar": "^0.0.12",
