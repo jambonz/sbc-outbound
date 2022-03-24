@@ -149,7 +149,7 @@ if (process.env.K8S) {
   createHealthCheckApp(PORT, logger)
   .then(app => {
     healthCheck({app, logger, path: '/', fn: getCount});
-    healthCheck({app, logger, path: '/system-health', fn: systemHealth(redisClient, mysqlClient.promise(), activeCallIds.size, srfHealth)});;
+    healthCheck({app, logger, path: '/system-health', fn: systemHealth(redisClient, mysqlClient.promise(), activeCallIds.size, srfHealth)});
   })
 }
 
