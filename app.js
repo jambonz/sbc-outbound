@@ -11,7 +11,7 @@ assert.ok(process.env.JAMBONES_NETWORK_CIDR || process.env.K8S, 'missing JAMBONE
 const Srf = require('drachtio-srf');
 const srf = new Srf('sbc-outbound');
 const CIDRMatcher = require('cidr-matcher');
-const {pingMsTeamsGateways, equalsIgnoreOrder} = require('./lib/utils');
+const {pingMsTeamsGateways, equalsIgnoreOrder, systemHealth, createHealthCheckApp} = require('./lib/utils');
 const opts = Object.assign({
   timestamp: () => {return `, "time": "${new Date().toISOString()}"`;}
 }, {level: process.env.JAMBONES_LOGLEVEL || 'info'});
@@ -32,6 +32,7 @@ const CallSession = require('./lib/call-session');
 const setNameRtp = `${(process.env.JAMBONES_CLUSTER_ID || 'default')}:active-rtp`;
 const rtpServers = [];
 const {
+  pool: mysqlClient,
   performLcr,
   lookupAllTeamsFQDNs,
   lookupAccountBySipRealm,
@@ -47,6 +48,7 @@ const {
   connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10
 }, logger);
 const {
+  client: redisClient,
   createHash,
   retrieveHash,
   incrKey,
@@ -58,6 +60,7 @@ const {
   port: process.env.JAMBONES_REDIS_PORT || 6379
 }, logger);
 
+let srfHealth = true;
 const activeCallIds = new Map();
 
 srf.locals = {...srf.locals,
@@ -127,6 +130,7 @@ else {
 }
 if (process.env.NODE_ENV === 'test') {
   srf.on('error', (err) => {
+    srfHealth = false
     logger.info(err, 'Error connecting to drachtio');
   });
 }
@@ -141,7 +145,12 @@ if (process.env.K8S) {
   const PORT = process.env.HTTP_PORT || 3000;
   const getCount = () => activeCallIds.size;
   const healthCheck = require('@jambonz/http-health-check');
-  healthCheck({port: PORT, logger, path: '/', fn: getCount});
+
+  createHealthCheckApp(PORT, logger)
+  .then(app => {
+    healthCheck({app, logger, path: '/', fn: getCount});
+    healthCheck({app, logger, path: '/system-health', fn: systemHealth(redisClient, mysqlClient.promise(), activeCallIds.size, srfHealth)});;
+  })
 }
 
 if ('test' !== process.env.NODE_ENV) {
