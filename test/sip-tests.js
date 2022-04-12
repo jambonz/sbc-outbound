@@ -2,7 +2,8 @@ const test = require('tape');
 const { output, sippUac } = require('./sipp')('test_sbc-outbound');
 const {execSync} = require('child_process');
 const debug = require('debug')('jambonz:sbc-outbound');
-const consoleLogger = {error: console.error, info: console.log, debug: console.log};
+const bent = require('bent');
+const getJSON = bent('json');
 
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
@@ -29,6 +30,11 @@ test('sbc-outbound tests', async(t) => {
   try {
     await connect(srf);
   
+    let obj = await getJSON('http://127.0.0.1:3050/');
+    t.ok(obj.calls === 0, 'HTTP GET / works (current call count)')
+    obj = await getJSON('http://127.0.0.1:3050/system-health');
+    t.ok(obj.calls === 0, 'HTTP GET /system-health works (health check)')
+
     /* call to unregistered user */
     debug('successfully connected to drachtio server');
     await sippUac('uac-pcap-device-404.xml');
