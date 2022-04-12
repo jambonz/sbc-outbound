@@ -11,7 +11,7 @@ assert.ok(process.env.JAMBONES_NETWORK_CIDR || process.env.K8S, 'missing JAMBONE
 const Srf = require('drachtio-srf');
 const srf = new Srf('sbc-outbound');
 const CIDRMatcher = require('cidr-matcher');
-const {pingMsTeamsGateways, equalsIgnoreOrder} = require('./lib/utils');
+const {equalsIgnoreOrder, pingMsTeamsGateways, createHealthCheckApp, systemHealth} = require('./lib/utils');
 const opts = Object.assign({
   timestamp: () => {return `, "time": "${new Date().toISOString()}"`;}
 }, {level: process.env.JAMBONES_LOGLEVEL || 'info'});
@@ -32,6 +32,7 @@ const CallSession = require('./lib/call-session');
 const setNameRtp = `${(process.env.JAMBONES_CLUSTER_ID || 'default')}:active-rtp`;
 const rtpServers = [];
 const {
+  ping,
   performLcr,
   lookupAllTeamsFQDNs,
   lookupAccountBySipRealm,
@@ -47,6 +48,7 @@ const {
   connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10
 }, logger);
 const {
+  client: redisClient,
   createHash,
   retrieveHash,
   incrKey,
@@ -68,6 +70,7 @@ srf.locals = {...srf.locals,
   queryCdrs,
   activeCallIds,
   dbHelpers: {
+    ping,
     performLcr,
     lookupAllTeamsFQDNs,
     lookupAccountBySipRealm,
@@ -137,13 +140,32 @@ srf.invite((req, res) => {
   session.connect();
 });
 
-if (process.env.K8S) {
+if (process.env.K8S || process.env.HTTP_PORT) {
   const PORT = process.env.HTTP_PORT || 3000;
-  const getCount = () => activeCallIds.size;
   const healthCheck = require('@jambonz/http-health-check');
-  healthCheck({port: PORT, logger, path: '/', fn: getCount});
-}
 
+  const getCount = () => srf.locals.activeCallIds.size;
+
+  createHealthCheckApp(PORT, logger)
+    .then((app) => {
+      healthCheck({
+        app,
+        logger,
+        path: '/',
+        fn: getCount
+      });
+      healthCheck({
+        app,
+        logger,
+        path: '/system-health',
+        fn: systemHealth.bind(null, redisClient, ping, getCount)
+      });
+      return;
+    })
+    .catch((err) => {
+      logger.error({err}, 'Error creating health check server');
+    });
+}
 if ('test' !== process.env.NODE_ENV) {
   /* update call stats periodically */
   setInterval(() => {
