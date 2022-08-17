@@ -40,7 +40,8 @@
     "drachtio-fn-b2b-sugar": "^0.0.12",
     "drachtio-srf": "^4.5.1",
     "express": "^4.18.1",
-    "pino": "^7.11.0"
+    "pino": "^7.11.0",
+    "sdp-transform": "^2.14.1"
   },
   "devDependencies": {
     "bent": "^7.3.12",
