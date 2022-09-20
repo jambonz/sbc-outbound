@@ -27,7 +27,7 @@
     "jslint": "eslint app.js lib"
   },
   "dependencies": {
-    "@jambonz/db-helpers": "^0.6.18",
+    "@jambonz/db-helpers": "^0.6.19",
     "@jambonz/http-health-check": "^0.0.1",
     "@jambonz/mw-registrar": "0.2.2",
     "@jambonz/realtimedb-helpers": "^0.4.29",
