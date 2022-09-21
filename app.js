@@ -17,6 +17,9 @@ const opts = Object.assign({
 }, {level: process.env.JAMBONES_LOGLEVEL || 'info'});
 const logger = require('pino')(opts);
 const {
+  writeCallCount,
+  writeCallCountSP,
+  writeCallCountApp,
   writeCdrs,
   queryCdrs,
   writeAlerts,
@@ -65,6 +68,9 @@ const activeCallIds = new Map();
 
 srf.locals = {...srf.locals,
   stats,
+  writeCallCount,
+  writeCallCountSP,
+  writeCallCountApp,
   writeCdrs,
   writeAlerts,
   AlertType,
