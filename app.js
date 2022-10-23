@@ -102,7 +102,7 @@ const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger
 const ngProtocol = process.env.JAMBONES_NG_PROTOCOL || 'udp';
 const ngPort = process.env.RTPENGINE_PORT || ('udp' === ngProtocol ? 22222 : 8080);
 const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], logger, {
-  emitter: stats,
+  //emitter: stats,
   dtmfListenPort: process.env.DTMF_LISTEN_PORT || 22225,
   protocol: ngProtocol
 });
