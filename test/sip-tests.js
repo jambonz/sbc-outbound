@@ -84,7 +84,7 @@ test('sbc-outbound tests', async(t) => {
 
     const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
     //console.log(`cdrs: ${JSON.stringify(res)}`);
-    t.ok(res.total === 6, 'wrote 6 cdrs');
+    t.ok(res.total === 5, 'wrote 5 cdrs');
 
     srf.disconnect();
   } catch (err) {
