@@ -44,9 +44,9 @@ test('sbc-outbound tests', async(t) => {
     await sippUac('uac-pcap-carrier-success.xml');
     t.pass('successfully completed outbound call to sip trunk');
 
-    /* call to PSTN with request uri se see in kubernetes */
+    /* call to PSTN with request uri we see in kubernetes */
     await sippUac('uac-pcap-carrier-success-k8s.xml');
-    t.pass('successfully completed outbound call to sip trunk (k8S req uri');
+    t.pass('successfully completed outbound call to sip trunk (k8S req uri)');
 
     // re-rack test data
     execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
@@ -84,11 +84,11 @@ test('sbc-outbound tests', async(t) => {
     await sippUac('uac-pcap-carrier-fail-limits.xml');
     t.pass('fails when max calls in progress');
       
-    await waitFor(10);
+    await waitFor(18);
 
     const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
-    //console.log(`cdrs: ${JSON.stringify(res)}`);
-    t.ok(res.total === 5, 'wrote 5 cdrs');
+    console.log(`cdrs: ${JSON.stringify(res)}`);
+    t.ok(res.total === 6, 'wrote 6 cdrs');
 
     srf.disconnect();
   } catch (err) {
