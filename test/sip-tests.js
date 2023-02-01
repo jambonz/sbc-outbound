@@ -42,7 +42,11 @@ test('sbc-outbound tests', async(t) => {
 
     /* call to PSTN with no lcr configured */
     await sippUac('uac-pcap-carrier-success.xml');
-    t.pass('successfully completed outbound call to configured sip trunk');
+    t.pass('successfully completed outbound call to sip trunk');
+
+    /* call to PSTN with request uri se see in kubernetes */
+    await sippUac('uac-pcap-carrier-success-k8s.xml');
+    t.pass('successfully completed outbound call to sip trunk (k8S req uri');
 
     // re-rack test data
     execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
