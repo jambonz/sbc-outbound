@@ -84,7 +84,7 @@ test('sbc-outbound tests', async(t) => {
     await sippUac('uac-pcap-carrier-fail-limits.xml');
     t.pass('fails when max calls in progress');
       
-    await waitFor(18);
+    await waitFor(20);
 
     const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
     console.log(`cdrs: ${JSON.stringify(res)}`);
