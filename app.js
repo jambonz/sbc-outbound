@@ -65,6 +65,8 @@ const {
 }, logger);
 
 const activeCallIds = new Map();
+const Emitter = require('events');
+const idleEmitter = new Emitter();
 
 srf.locals = {...srf.locals,
   stats,
@@ -76,6 +78,7 @@ srf.locals = {...srf.locals,
   AlertType,
   queryCdrs,
   activeCallIds,
+  idleEmitter,
   dbHelpers: {
     ping,
     performLcr,
@@ -237,5 +240,21 @@ else {
 }
 
 pingMsTeamsGateways(logger, srf);
+
+process.on('SIGUSR2', handle.bind(null));
+process.on('SIGTERM', handle.bind(null));
+
+function handle(signal) {
+  logger.info(`got signal ${signal}`);
+  if (process.env.K8S) {
+    if (0 === activeCallIds.size) {
+      logger.info('exiting immediately since we have no calls in progress');
+      process.exit(0);
+    }
+    else {
+      idleEmitter.once('idle', () => process.exit(0));
+    }
+  }
+}
 
 module.exports = {srf};
