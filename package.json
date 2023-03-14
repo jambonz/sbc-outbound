@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@jambonz/db-helpers": "^0.7.4",
-    "@jambonz/realtimedb-helpers": "^0.5.7",
+    "@jambonz/realtimedb-helpers": "^0.7.0",
     "@jambonz/http-health-check": "^0.0.1",
     "@jambonz/mw-registrar": "0.2.2",
     "@jambonz/rtpengine-utils": "^0.4.3",
