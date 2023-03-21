@@ -182,8 +182,9 @@ if (process.env.K8S || process.env.HTTP_PORT) {
 if ('test' !== process.env.NODE_ENV) {
   /* update call stats periodically */
   setInterval(() => {
-    stats.gauge('sbc.sip.calls.count', activeCallIds.size, ['direction:outbound']);
-  }, 5000);
+    stats.gauge('sbc.sip.calls.count', activeCallIds.size, ['direction:outbound',
+      `instance_id:${process.env.INSTANCE_ID || 0}`]);
+  }, 20000);
 }
 
 const lookupRtpServiceEndpoints = (lookup, serviceName) => {
