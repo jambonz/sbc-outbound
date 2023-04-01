@@ -7,6 +7,7 @@ assert.ok(process.env.JAMBONES_REDIS_HOST, 'missing JAMBONES_REDIS_HOST env var'
 assert.ok(process.env.DRACHTIO_PORT || process.env.DRACHTIO_HOST, 'missing DRACHTIO_PORT env var');
 assert.ok(process.env.DRACHTIO_SECRET, 'missing DRACHTIO_SECRET env var');
 assert.ok(process.env.JAMBONES_NETWORK_CIDR || process.env.K8S, 'missing JAMBONES_NETWORK_CIDR env var');
+assert.ok(process.env.JAMBONES_TIME_SERIES_HOST, 'missing JAMBONES_TIME_SERIES_HOST env var');
 
 const Srf = require('drachtio-srf');
 const srf = new Srf('sbc-outbound');
@@ -60,7 +61,7 @@ const {
   retrieveSet,
   isMemberOfSet
 } = require('@jambonz/realtimedb-helpers')({
-  host: process.env.JAMBONES_REDIS_HOST || 'localhost',
+  host: process.env.JAMBONES_REDIS_HOST,
   port: process.env.JAMBONES_REDIS_PORT || 6379
 }, logger);
 
