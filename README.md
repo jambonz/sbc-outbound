@@ -14,6 +14,7 @@ Configuration is provided via environment variables:
 |HTTP_PORT| tcp port listen port |no|
 |JAMBONES_LOGLEVEL| log level for application, 'info' or 'debug'|no|
 |JAMBONES_MYSQL_HOST| mysql host|yes|
+|JAMBONES_MYSQL_PORT| mysql port |no|
 |JAMBONES_MYSQL_USER| mysql username|yes|
 |JAMBONES_MYSQL_PASSWORD|  mysql password|yes|
 |JAMBONES_MYSQL_DATABASE| mysql data|yes|
