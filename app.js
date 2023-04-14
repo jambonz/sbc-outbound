@@ -119,7 +119,7 @@ srf.locals = {
     tracer,
   },
 };
-const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger, {
+const {initLocals, createRootSpan, checkLimits, route} = require('./lib/middleware')(srf, logger, {
   host: process.env.JAMBONES_REDIS_HOST,
   port: process.env.JAMBONES_REDIS_PORT || 6379,
 });
@@ -166,7 +166,7 @@ if (process.env.NODE_ENV === 'test') {
   });
 }
 
-srf.use('invite', [initLocals, checkLimits, route]);
+srf.use('invite', [initLocals, createRootSpan, checkLimits, route]);
 srf.invite((req, res) => {
   const session = new CallSession(logger, req, res);
   session.connect();
