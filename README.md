@@ -31,6 +31,11 @@ Configuration is provided via environment variables:
 |JAMBONES_RECORD_ALL_CALLS| enable auto record calls |no|
 |K8S| service running as kubernetes service |no|
 |K8S_RTPENGINE_SERVICE_NAME| rtpengine service name(required for K8S) |no|
+|JAMBONES_OTEL_ENABLED| set to 1 to enable otel tracing |no|
+|JAMBONES_OTEL_SERVICE_NAME| app name |no|
+|OTEL_EXPORTER_JAEGER_ENDPOINT| jaeger endpoint url  'http://127.0.0.1:14268/api/traces' |no|
+
+
 
 ### running under pm2
 Typically, this application runs under [pm2](https://pm2.io) using an [ecosystem.config.js](https://pm2.keymetrics.io/docs/usage/application-declaration/) file similar to this:

@@ -76,7 +76,7 @@ const {version} = require('./package.json');
 const {JambonzTracer} = require('@jambonz/tracing');
 const {tracer} = new JambonzTracer({
   version,
-  name: process.env.JAMBONES_OTEL_SERVICE_NAME || 'jambonz-sbc-inbound',
+  name: process.env.JAMBONES_OTEL_SERVICE_NAME || 'jambonz-sbc-outbound',
   enabled: process.env.JAMBONES_OTEL_ENABLED,
   jaegerHost: process.env.OTEL_EXPORTER_JAEGER_AGENT_HOST,
   jaegerEndpoint: process.env.OTEL_EXPORTER_JAEGER_ENDPOINT,
