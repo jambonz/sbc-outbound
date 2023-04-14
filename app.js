@@ -14,7 +14,9 @@ const srf = new Srf('sbc-outbound');
 const CIDRMatcher = require('cidr-matcher');
 const {equalsIgnoreOrder, pingMsTeamsGateways, createHealthCheckApp, systemHealth} = require('./lib/utils');
 const opts = Object.assign({
-  timestamp: () => {return `, "time": "${new Date().toISOString()}"`;}
+  timestamp: () => {
+    return `, "time": "${new Date().toISOString()}"`;
+  },
 }, {level: process.env.JAMBONES_LOGLEVEL || 'info'});
 const logger = require('pino')(opts);
 const {
@@ -24,11 +26,11 @@ const {
   writeCdrs,
   queryCdrs,
   writeAlerts,
-  AlertType
+  AlertType,
 } = require('@jambonz/time-series')(logger, {
   host: process.env.JAMBONES_TIME_SERIES_HOST,
   commitSize: 50,
-  commitInterval: 'test' === process.env.NODE_ENV ? 7 : 20
+  commitInterval: 'test' === process.env.NODE_ENV ? 7 : 20,
 });
 const StatsCollector = require('@jambonz/stats-collector');
 const stats = new StatsCollector(logger);
@@ -44,14 +46,14 @@ const {
   lookupAccountCapacitiesBySid,
   lookupSipGatewaysByCarrier,
   lookupCarrierBySid,
-  queryCallLimits
+  queryCallLimits,
 } = require('@jambonz/db-helpers')({
   host: process.env.JAMBONES_MYSQL_HOST,
   port: process.env.JAMBONES_MYSQL_PORT || 3306,
   user: process.env.JAMBONES_MYSQL_USER,
   password: process.env.JAMBONES_MYSQL_PASSWORD,
   database: process.env.JAMBONES_MYSQL_DATABASE,
-  connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10
+  connectionLimit: process.env.JAMBONES_MYSQL_CONNECTION_LIMIT || 10,
 }, logger);
 const {
   client: redisClient,
@@ -60,17 +62,31 @@ const {
   incrKey,
   decrKey,
   retrieveSet,
-  isMemberOfSet
+  isMemberOfSet,
 } = require('@jambonz/realtimedb-helpers')({
   host: process.env.JAMBONES_REDIS_HOST,
-  port: process.env.JAMBONES_REDIS_PORT || 6379
+  port: process.env.JAMBONES_REDIS_PORT || 6379,
 }, logger);
 
 const activeCallIds = new Map();
 const Emitter = require('events');
 const idleEmitter = new Emitter();
 
-srf.locals = {...srf.locals,
+const {version} = require('./package.json');
+const {JambonzTracer} = require('@jambonz/tracing');
+const {tracer} = new JambonzTracer({
+  version,
+  name: process.env.JAMBONES_OTEL_SERVICE_NAME || 'jambonz-sbc-inbound',
+  enabled: process.env.JAMBONES_OTEL_ENABLED,
+  jaegerHost: process.env.OTEL_EXPORTER_JAEGER_AGENT_HOST,
+  jaegerEndpoint: process.env.OTEL_EXPORTER_JAEGER_ENDPOINT,
+  zipkinUrl: process.env.OTEL_EXPORTER_ZIPKIN_URL,
+  collectorUrl: process.env.OTEL_EXPORTER_COLLECTOR_URL,
+  logLevel: process.env.JAMBONES_LOGLEVEL,
+});
+
+srf.locals = {
+  ...srf.locals,
   stats,
   writeCallCount,
   writeCallCountSP,
@@ -90,26 +106,29 @@ srf.locals = {...srf.locals,
     lookupAccountCapacitiesBySid,
     lookupSipGatewaysByCarrier,
     lookupCarrierBySid,
-    queryCallLimits
+    queryCallLimits,
   },
   realtimeDbHelpers: {
     createHash,
     retrieveHash,
     incrKey,
     decrKey,
-    isMemberOfSet
-  }
+    isMemberOfSet,
+  },
+  otel: {
+    tracer,
+  },
 };
 const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger, {
   host: process.env.JAMBONES_REDIS_HOST,
-  port: process.env.JAMBONES_REDIS_PORT || 6379
+  port: process.env.JAMBONES_REDIS_PORT || 6379,
 });
 const ngProtocol = process.env.JAMBONES_NG_PROTOCOL || 'udp';
 const ngPort = process.env.RTPENGINE_PORT || ('udp' === ngProtocol ? 22222 : 8080);
 const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], logger, {
   //emitter: stats,
   dtmfListenPort: process.env.DTMF_LISTEN_PORT || 22225,
-  protocol: ngProtocol
+  protocol: ngProtocol,
 });
 srf.locals.getRtpEngine = getRtpEngine;
 
@@ -120,7 +139,7 @@ if (process.env.DRACHTIO_HOST && !process.env.K8S) {
   logger.info({cidrs}, 'internal network CIDRs');
   const matcher = new CIDRMatcher(cidrs);
 
-  srf.connect({host: process.env.DRACHTIO_HOST, port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET });
+  srf.connect({host: process.env.DRACHTIO_HOST, port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET});
   srf.on('connect', (err, hp) => {
     logger.info(`connected to drachtio listening on ${hp}`);
 
@@ -130,16 +149,14 @@ if (process.env.DRACHTIO_HOST && !process.env.K8S) {
       if (arr && 'udp' === arr[1] && !matcher.contains(arr[2])) {
         logger.info(`sbc public address: ${arr[2]}`);
         srf.locals.sipAddress = arr[2];
-      }
-      else if (arr && 'tcp' === arr[1] && matcher.contains(arr[2])) {
+      } else if (arr && 'tcp' === arr[1] && matcher.contains(arr[2])) {
         const hostport = `${arr[2]}:${arr[3]}`;
         logger.info(`sbc private address: ${hostport}`);
         srf.locals.privateSipAddress = hostport;
       }
     }
   });
-}
-else {
+} else {
   logger.info(`listening in outbound mode on port ${process.env.DRACHTIO_PORT}`);
   srf.listen({port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET});
 }
@@ -167,13 +184,13 @@ if (process.env.K8S || process.env.HTTP_PORT) {
         app,
         logger,
         path: '/',
-        fn: getCount
+        fn: getCount,
       });
       healthCheck({
         app,
         logger,
         path: '/system-health',
-        fn: systemHealth.bind(null, redisClient, ping, getCount)
+        fn: systemHealth.bind(null, redisClient, ping, getCount),
       });
       return;
     })
@@ -214,12 +231,10 @@ if (process.env.K8S_RTPENGINE_SERVICE_NAME) {
   const {lookup} = require('dns');
   lookupRtpServiceEndpoints(lookup, svc);
   setInterval(lookupRtpServiceEndpoints.bind(null, lookup, svc), process.env.RTPENGINE_DNS_POLL_INTERVAL || 10000);
-}
-else if (process.env.JAMBONES_RTPENGINES) {
+} else if (process.env.JAMBONES_RTPENGINES) {
   /* static list of rtpengines */
   setRtpEngines([process.env.JAMBONES_RTPENGINES]);
-}
-else {
+} else {
   /* poll redis periodically for rtpengines that have registered via OPTIONS ping */
   const getActiveRtpServers = async() => {
     try {
@@ -253,8 +268,7 @@ function handle(signal) {
     if (0 === activeCallIds.size) {
       logger.info('exiting immediately since we have no calls in progress');
       process.exit(0);
-    }
-    else {
+    } else {
       idleEmitter.once('idle', () => process.exit(0));
     }
   }

@@ -35,6 +35,7 @@
     "@jambonz/siprec-client-utils": "^0.2.4",
     "@jambonz/stats-collector": "^0.1.8",
     "@jambonz/time-series": "^0.2.5",
+    "@jambonz/tracing": "^0.1.6",
     "cidr-matcher": "^2.1.1",
     "debug": "^4.3.4",
     "drachtio-fn-b2b-sugar": "^0.0.12",
