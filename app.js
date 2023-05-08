@@ -44,7 +44,8 @@ const {
   lookupAccountCapacitiesBySid,
   lookupSipGatewaysByCarrier,
   lookupCarrierBySid,
-  queryCallLimits
+  queryCallLimits,
+  lookupCarrierByAccountLcr
 } = require('@jambonz/db-helpers')({
   host: process.env.JAMBONES_MYSQL_HOST,
   port: process.env.JAMBONES_MYSQL_PORT || 3306,
@@ -90,7 +91,8 @@ srf.locals = {...srf.locals,
     lookupAccountCapacitiesBySid,
     lookupSipGatewaysByCarrier,
     lookupCarrierBySid,
-    queryCallLimits
+    queryCallLimits,
+    lookupCarrierByAccountLcr
   },
   realtimeDbHelpers: {
     createHash,
