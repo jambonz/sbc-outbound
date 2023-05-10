@@ -28,10 +28,11 @@ insert into sip_gateways (sip_gateway_sid, voip_carrier_sid, ipv4, inbound, outb
 values ('e71519ff-4494-4c98-a06a-324e2712d94b', '1d8ef351-062a-4487-94f8-7698d5a40d24', '172.39.0.21', true, true);
 
 -- lcr route: first try eastco (503) then westco (200)
-insert into lcr_routes(lcr_route_sid, regex, priority) values ('0eba4204-b036-4388-8f47-724c4cfb3d4e', '.*', 1);
+insert into lcr(lcr_sid, name, is_active, service_provider_sid) values ('0eba4204-b036-4388-8f47-724c4cfb3d4f', 'default LCR', 1, '3f35518f-5a0d-4c2e-90a5-2407bb3b36f0');
+insert into lcr_routes(lcr_route_sid, lcr_sid, regex, priority) values ('0eba4204-b036-4388-8f47-724c4cfb3d4e', '0eba4204-b036-4388-8f47-724c4cfb3d4f', '.*', 1);
 
 insert into lcr_carrier_set_entry(lcr_carrier_set_entry_sid, lcr_route_sid, voip_carrier_sid, priority)
-values ('b677a7b5-bec6-4045-ae4a-a67a5ccb3448', '0eba4204-b036-4388-8f47-724c4cfb3d4e', '1d8ef351-062a-4487-94f8-7698d5a40d24', 1);
+values ('b677a7b5-bec6-4045-ae4a-a67a5ccb3448', '0eba4204-b036-4388-8f47-724c4cfb3d4e', '1d8ef351-062a-4487-94f8-7698d5a40d24', 2);
 insert into lcr_carrier_set_entry(lcr_carrier_set_entry_sid, lcr_route_sid, voip_carrier_sid, priority)
-values ('13e344a0-8a4c-4f95-8a19-ccbfc7ab053e', '0eba4204-b036-4388-8f47-724c4cfb3d4e', '287c1452-620d-4195-9f19-c9814ef90d78', 2);
+values ('13e344a0-8a4c-4f95-8a19-ccbfc7ab053e', '0eba4204-b036-4388-8f47-724c4cfb3d4e', '287c1452-620d-4195-9f19-c9814ef90d78', 1);
 
