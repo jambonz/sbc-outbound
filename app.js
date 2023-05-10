@@ -37,7 +37,7 @@ const setNameRtp = `${(process.env.JAMBONES_CLUSTER_ID || 'default')}:active-rtp
 const rtpServers = [];
 const {
   ping,
-  performLcr,
+  lookupOutboundCarrierForAccount,
   lookupAllTeamsFQDNs,
   lookupAccountBySipRealm,
   lookupAccountBySid,
@@ -84,7 +84,7 @@ srf.locals = {...srf.locals,
   idleEmitter,
   dbHelpers: {
     ping,
-    performLcr,
+    lookupOutboundCarrierForAccount,
     lookupAllTeamsFQDNs,
     lookupAccountBySipRealm,
     lookupAccountBySid,

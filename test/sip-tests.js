@@ -54,7 +54,7 @@ test('sbc-outbound tests', async(t) => {
 
     /* call to PSTN with lcr configured */
     await sippUac('uac-pcap-carrier-success.xml');
-    t.pass('successfully completed outbound lcr carrier with crankback after failure');
+    t.pass('successfully completed outbound call using LCR');
 
     // re-rack test data
     execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
@@ -87,7 +87,7 @@ test('sbc-outbound tests', async(t) => {
     await waitFor(25);
 
     const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
-    console.log(`cdrs: ${JSON.stringify(res)}`);
+    console.log(`${res.total} cdrs: ${JSON.stringify(res)}`);
     t.ok(res.total === 6, 'wrote 6 cdrs');
 
     srf.disconnect();
