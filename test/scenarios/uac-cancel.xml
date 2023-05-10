@@ -33,7 +33,7 @@
       CSeq: 1 INVITE
       Contact: sip:sipp@[local_ip]:[local_port]
       Max-Forwards: 70
-      Subject: uac-pcap-carrier-success
+      Subject: uac-cancel
       X-Account-Sid: ed649e33-e771-403a-8c99-1780eabbc803
       X-Call-Sid: fff49e33-e771-403a-8c99-1780eabbc803
       X-Jambonz-Routing: phone
@@ -60,7 +60,7 @@
 
   <recv response="100" response_txn="invite"/>
 
-  <pause milliseconds="3000"/>
+  <pause milliseconds="1000"/>
 
   <send>
   <![CDATA[
