@@ -44,6 +44,10 @@ test('sbc-outbound tests', async(t) => {
     await sippUac('uac-pcap-carrier-success.xml');
     t.pass('successfully completed outbound call to sip trunk');
 
+    /* call to PSTN with no lcr configured */
+    await sippUac('uac-pcap-inbound-carrier-success.xml');
+    t.pass('successfully completed outbound call to sip trunk');
+
     /* call to PSTN with request uri we see in kubernetes */
     await sippUac('uac-pcap-carrier-success-k8s.xml');
     t.pass('successfully completed outbound call to sip trunk (k8S req uri)');
@@ -88,7 +92,7 @@ test('sbc-outbound tests', async(t) => {
 
     const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
     console.log(`${res.total} cdrs: ${JSON.stringify(res)}`);
-    t.ok(res.total === 6, 'wrote 6 cdrs');
+    t.ok(res.total === 7, 'wrote 7 cdrs');
 
     srf.disconnect();
   } catch (err) {
