@@ -44,6 +44,10 @@ test('sbc-outbound tests', async(t) => {
     await sippUac('uac-pcap-carrier-success.xml');
     t.pass('successfully completed outbound call to sip trunk');
 
+    /* call to PSTN with no lcr configured */
+    await sippUac('uac-pcap-inbound-carrier-success.xml');
+    t.pass('successfully completed outbound call to sip trunk');
+
     /* call to PSTN with request uri we see in kubernetes */
     await sippUac('uac-pcap-carrier-success-k8s.xml');
     t.pass('successfully completed outbound call to sip trunk (k8S req uri)');
