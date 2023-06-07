@@ -87,7 +87,7 @@ const {
   incrKey,
   decrKey,
   retrieveSet,
-  isMemberOfSet
+  isMemberOfSet,
 } = require('@jambonz/realtimedb-helpers')(JAMBONES_REDIS_SENTINELS || {
   host: process.env.JAMBONES_REDIS_HOST,
   port: process.env.JAMBONES_REDIS_PORT || 6379
@@ -128,10 +128,7 @@ srf.locals = {...srf.locals,
     isMemberOfSet
   }
 };
-const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger, {
-  host: process.env.JAMBONES_REDIS_HOST,
-  port: process.env.JAMBONES_REDIS_PORT || 6379
-});
+const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger, redisClient);
 const ngProtocol = process.env.JAMBONES_NG_PROTOCOL || 'udp';
 const ngPort = process.env.RTPENGINE_PORT || ('udp' === ngProtocol ? 22222 : 8080);
 const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], logger, {
