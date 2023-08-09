@@ -44,6 +44,10 @@ test('sbc-outbound tests', async(t) => {
     await sippUac('uac-pcap-carrier-success.xml');
     t.pass('successfully completed outbound call to sip trunk');
 
+    /* call to Sip URI with no lcr configured */
+    await sippUac('uac-pcap-sip-routing-success.xml');
+    t.pass('successfully completed outbound call to sip routing trunk');
+
     /* call to PSTN with no lcr configured */
     await sippUac('uac-pcap-inbound-carrier-success.xml');
     t.pass('successfully completed outbound call to sip trunk');
@@ -92,7 +96,7 @@ test('sbc-outbound tests', async(t) => {
 
     const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
     console.log(`${res.total} cdrs: ${JSON.stringify(res)}`);
-    t.ok(res.total === 7, 'wrote 7 cdrs');
+    t.ok(res.total === 8, 'wrote 8 cdrs');
 
     srf.disconnect();
   } catch (err) {
