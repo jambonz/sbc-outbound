@@ -44,6 +44,10 @@ test('sbc-outbound tests', async(t) => {
     await sippUac('uac-pcap-carrier-success.xml');
     t.pass('successfully completed outbound call to sip trunk');
 
+    /* call to Sip URI with no lcr configured */
+    await sippUac('uac-pcap-sip-routing-success.xml');
+    t.pass('successfully completed outbound call to sip routing trunk');
+
     /* call to PSTN with no lcr configured */
     await sippUac('uac-pcap-inbound-carrier-success.xml');
     t.pass('successfully completed outbound call to sip trunk');
