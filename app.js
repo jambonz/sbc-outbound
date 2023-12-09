@@ -3,7 +3,12 @@ assert.ok(process.env.JAMBONES_MYSQL_HOST &&
   process.env.JAMBONES_MYSQL_USER &&
   process.env.JAMBONES_MYSQL_PASSWORD &&
   process.env.JAMBONES_MYSQL_DATABASE, 'missing JAMBONES_MYSQL_XXX env vars');
-assert.ok(process.env.JAMBONES_REDIS_HOST, 'missing JAMBONES_REDIS_HOST env var');
+if (process.env.JAMBONES_REDIS_SENTINELS) {
+  assert.ok(process.env.JAMBONES_REDIS_SENTINEL_MASTER_NAME,
+    'missing JAMBONES_REDIS_SENTINEL_MASTER_NAME env var, JAMBONES_REDIS_SENTINEL_PASSWORD env var is optional');
+} else {
+  assert.ok(process.env.JAMBONES_REDIS_HOST, 'missing JAMBONES_REDIS_HOST env var');
+}
 assert.ok(process.env.DRACHTIO_PORT || process.env.DRACHTIO_HOST, 'missing DRACHTIO_PORT env var');
 assert.ok(process.env.DRACHTIO_SECRET, 'missing DRACHTIO_SECRET env var');
 assert.ok(process.env.JAMBONES_NETWORK_CIDR || process.env.K8S, 'missing JAMBONES_NETWORK_CIDR env var');
@@ -37,14 +42,15 @@ const setNameRtp = `${(process.env.JAMBONES_CLUSTER_ID || 'default')}:active-rtp
 const rtpServers = [];
 const {
   ping,
-  performLcr,
+  lookupOutboundCarrierForAccount,
   lookupAllTeamsFQDNs,
   lookupAccountBySipRealm,
   lookupAccountBySid,
   lookupAccountCapacitiesBySid,
   lookupSipGatewaysByCarrier,
   lookupCarrierBySid,
-  queryCallLimits
+  queryCallLimits,
+  lookupCarrierByAccountLcr
 } = require('@jambonz/db-helpers')({
   host: process.env.JAMBONES_MYSQL_HOST,
   port: process.env.JAMBONES_MYSQL_PORT || 3306,
@@ -60,11 +66,8 @@ const {
   incrKey,
   decrKey,
   retrieveSet,
-  isMemberOfSet
-} = require('@jambonz/realtimedb-helpers')({
-  host: process.env.JAMBONES_REDIS_HOST,
-  port: process.env.JAMBONES_REDIS_PORT || 6379
-}, logger);
+  isMemberOfSet,
+} = require('@jambonz/realtimedb-helpers')({}, logger);
 
 const activeCallIds = new Map();
 const Emitter = require('events');
@@ -83,14 +86,15 @@ srf.locals = {...srf.locals,
   idleEmitter,
   dbHelpers: {
     ping,
-    performLcr,
+    lookupOutboundCarrierForAccount,
     lookupAllTeamsFQDNs,
     lookupAccountBySipRealm,
     lookupAccountBySid,
     lookupAccountCapacitiesBySid,
     lookupSipGatewaysByCarrier,
     lookupCarrierBySid,
-    queryCallLimits
+    queryCallLimits,
+    lookupCarrierByAccountLcr
   },
   realtimeDbHelpers: {
     createHash,
@@ -100,10 +104,7 @@ srf.locals = {...srf.locals,
     isMemberOfSet
   }
 };
-const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger, {
-  host: process.env.JAMBONES_REDIS_HOST,
-  port: process.env.JAMBONES_REDIS_PORT || 6379
-});
+const {initLocals, checkLimits, route} = require('./lib/middleware')(srf, logger, redisClient);
 const ngProtocol = process.env.JAMBONES_NG_PROTOCOL || 'udp';
 const ngPort = process.env.RTPENGINE_PORT || ('udp' === ngProtocol ? 22222 : 8080);
 const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], logger, {
