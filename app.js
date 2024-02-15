@@ -97,6 +97,7 @@ srf.locals = {...srf.locals,
     lookupCarrierByAccountLcr
   },
   realtimeDbHelpers: {
+    client: redisClient,
     createHash,
     retrieveHash,
     incrKey,
