@@ -32,7 +32,7 @@
     "@jambonz/http-health-check": "^0.0.1",
     "@jambonz/mw-registrar": "0.2.4",
     "@jambonz/rtpengine-utils": "^0.4.3",
-    "@jambonz/siprec-client-utils": "^0.2.6",
+    "@jambonz/siprec-client-utils": "^0.2.7",
     "@jambonz/stats-collector": "^0.1.9",
     "@jambonz/time-series": "^0.2.5",
     "cidr-matcher": "^2.1.1",
