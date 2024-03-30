@@ -26,6 +26,7 @@ function connect(connectable) {
 test('sbc-outbound tests', async(t) => {
   const {srf} = require('../app');
   const { queryCdrs } = srf.locals;
+  const redisClient = srf.locals.realtimeDbHelpers.client;
 
   try {
     await connect(srf);
@@ -34,6 +35,12 @@ test('sbc-outbound tests', async(t) => {
     t.ok(obj.calls === 0, 'HTTP GET / works (current call count)')
     obj = await getJSON('http://127.0.0.1:3050/system-health');
     t.ok(obj.calls === 0, 'HTTP GET /system-health works (health check)')
+
+    // Black list good carrier for some seconds
+    await redisClient.setex('blacklist-sip-gateway:124a5339-c62c-4075-9e19-f4de70a96597', 3, '');
+    await sippUac('uac-pcap-carrier-fail-blacklist.xml');
+    t.pass('fails when carrier is blacklisted');
+    await redisClient.del('blacklist-sip-gateway:124a5339-c62c-4075-9e19-f4de70a96597');
 
     /* call to unregistered user */
     debug('successfully connected to drachtio server');
@@ -95,12 +102,12 @@ test('sbc-outbound tests', async(t) => {
     /* fails when session limit exceeded */
     await sippUac('uac-pcap-carrier-fail-limits.xml');
     t.pass('fails when max calls in progress');
-      
+
     await waitFor(25);
 
     const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
     console.log(`${res.total} cdrs: ${JSON.stringify(res)}`);
-    t.ok(res.total === 9, 'wrote 9 cdrs');
+    t.ok(res.total === 10, 'wrote 10 cdrs');
 
     srf.disconnect();
   } catch (err) {
