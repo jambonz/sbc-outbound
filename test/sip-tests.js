@@ -36,12 +36,6 @@ test('sbc-outbound tests', async(t) => {
     obj = await getJSON('http://127.0.0.1:3050/system-health');
     t.ok(obj.calls === 0, 'HTTP GET /system-health works (health check)')
 
-    // Black list good carrier for some seconds
-    await redisClient.setex('blacklist-sip-gateway:124a5339-c62c-4075-9e19-f4de70a96597', 3, '');
-    await sippUac('uac-pcap-carrier-fail-blacklist.xml');
-    t.pass('fails when carrier is blacklisted');
-    await redisClient.del('blacklist-sip-gateway:124a5339-c62c-4075-9e19-f4de70a96597');
-
     /* call to unregistered user */
     debug('successfully connected to drachtio server');
     await sippUac('uac-pcap-device-404.xml');
@@ -103,11 +97,21 @@ test('sbc-outbound tests', async(t) => {
     await sippUac('uac-pcap-carrier-fail-limits.xml');
     t.pass('fails when max calls in progress');
 
+    // re-rack test data
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/populate-test-data.sql`);
+
+    // Black list good carrier for some seconds
+    await redisClient.setex('blacklist-sip-gateway:124a5339-c62c-4075-9e19-f4de70a96597', 3, '');
+    await sippUac('uac-pcap-carrier-fail-blacklist.xml');
+    t.pass('fails when carrier is blacklisted');
+    await redisClient.del('blacklist-sip-gateway:124a5339-c62c-4075-9e19-f4de70a96597');
+
     await waitFor(25);
 
     const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
     console.log(`${res.total} cdrs: ${JSON.stringify(res)}`);
-    t.ok(res.total === 10, 'wrote 10 cdrs');
+    t.ok(res.total === 9, 'wrote 9 cdrs');
 
     srf.disconnect();
   } catch (err) {
