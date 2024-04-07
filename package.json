@@ -1,6 +1,6 @@
 {
   "name": "sbc-outbound",
-  "version": "0.8.5",
+  "version": "0.9.0",
   "main": "app.js",
   "engines": {
     "node": ">= 12.0.0"
@@ -28,26 +28,26 @@
   },
   "dependencies": {
     "@jambonz/db-helpers": "^0.9.3",
-    "@jambonz/realtimedb-helpers": "^0.8.7",
+    "@jambonz/realtimedb-helpers": "^0.8.8",
     "@jambonz/http-health-check": "^0.0.1",
-    "@jambonz/mw-registrar": "0.2.4",
-    "@jambonz/rtpengine-utils": "^0.4.3",
+    "@jambonz/mw-registrar": "0.2.7",
+    "@jambonz/rtpengine-utils": "^0.4.4",
     "@jambonz/siprec-client-utils": "^0.2.7",
     "@jambonz/stats-collector": "^0.1.9",
-    "@jambonz/time-series": "^0.2.5",
+    "@jambonz/time-series": "^0.2.8",
     "cidr-matcher": "^2.1.1",
     "debug": "^4.3.4",
-    "drachtio-fn-b2b-sugar": "^0.0.12",
+    "drachtio-fn-b2b-sugar": "^0.1.0",
     "drachtio-srf": "^4.5.31",
-    "express": "^4.18.1",
-    "pino": "^7.11.0",
-    "sdp-transform": "^2.14.1"
+    "express": "^4.19.2",
+    "pino": "^8.20.0",
+    "sdp-transform": "^2.14.2"
   },
   "devDependencies": {
     "bent": "^7.3.12",
     "eslint": "^7.32.0",
-    "eslint-plugin-promise": "^5.2.0",
+    "eslint-plugin-promise": "^6.1.1",
     "nyc": "^15.1.0",
-    "tape": "^5.5.3"
+    "tape": "^5.7.5"
   }
 }
