@@ -26,6 +26,7 @@ function connect(connectable) {
 test('sbc-outbound tests', async(t) => {
   const {srf} = require('../app');
   const { queryCdrs } = srf.locals;
+  const redisClient = srf.locals.realtimeDbHelpers.client;
 
   try {
     await connect(srf);
@@ -95,7 +96,17 @@ test('sbc-outbound tests', async(t) => {
     /* fails when session limit exceeded */
     await sippUac('uac-pcap-carrier-fail-limits.xml');
     t.pass('fails when max calls in progress');
-      
+
+    // re-rack test data
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/jambones-sql.sql`);
+    execSync(`mysql -h 127.0.0.1 -u root  --protocol=tcp -D jambones_test < ${__dirname}/db/populate-test-data.sql`);
+
+    // Black list good carrier for some seconds
+    await redisClient.setex('blacklist-sip-gateway:124a5339-c62c-4075-9e19-f4de70a96597', 3, '');
+    await sippUac('uac-pcap-carrier-fail-blacklist.xml');
+    t.pass('fails when carrier is blacklisted');
+    await redisClient.del('blacklist-sip-gateway:124a5339-c62c-4075-9e19-f4de70a96597');
+
     await waitFor(25);
 
     const res = await queryCdrs({account_sid: 'ed649e33-e771-403a-8c99-1780eabbc803'});
