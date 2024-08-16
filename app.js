@@ -273,4 +273,4 @@ function handle(signal) {
   }
 }
 
-module.exports = {srf};
+module.exports = {srf, logger};
