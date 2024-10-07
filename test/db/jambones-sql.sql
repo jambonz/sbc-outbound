@@ -358,7 +358,9 @@ CREATE TABLE system_information
 (
 domain_name VARCHAR(255),
 sip_domain_name VARCHAR(255),
-monitoring_domain_name VARCHAR(255)
+monitoring_domain_name VARCHAR(255),
+private_network_cidr VARCHAR(8192),
+log_level ENUM('info', 'debug') NOT NULL DEFAULT 'info'
 );
 
 CREATE TABLE users
@@ -552,6 +554,7 @@ siprec_hook_sid CHAR(36),
 record_all_calls BOOLEAN NOT NULL DEFAULT false,
 record_format VARCHAR(16) NOT NULL DEFAULT 'mp3',
 bucket_credential VARCHAR(8192) COMMENT 'credential used to authenticate with storage service',
+enable_debug_log BOOLEAN NOT NULL DEFAULT false,
 PRIMARY KEY (account_sid)
 ) COMMENT='An enterprise that uses the platform for comm services';
 
