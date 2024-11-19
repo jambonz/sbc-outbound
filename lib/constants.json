@@ -1,0 +1,7 @@
+{
+  "MediaPath": {
+  "NoMedia": "no-media",
+  "PartialMedia": "partial-media",
+  "FullMedia": "full-media"
+  }
+}

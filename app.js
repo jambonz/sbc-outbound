@@ -68,6 +68,8 @@ const {
   decrKey,
   retrieveSet,
   isMemberOfSet,
+  addKey,
+  retrieveKey
 } = require('@jambonz/realtimedb-helpers')({}, logger);
 
 const activeCallIds = new Map();
@@ -101,6 +103,8 @@ srf.locals = {...srf.locals,
   },
   realtimeDbHelpers: {
     client: redisClient,
+    addKey,
+    retrieveKey,
     createHash,
     retrieveHash,
     incrKey,
