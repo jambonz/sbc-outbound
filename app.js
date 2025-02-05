@@ -69,6 +69,7 @@ const {
   retrieveSet,
   isMemberOfSet,
   addKey,
+  deleteKey,
   retrieveKey
 } = require('@jambonz/realtimedb-helpers')({}, logger);
 
@@ -104,6 +105,7 @@ srf.locals = {...srf.locals,
   realtimeDbHelpers: {
     client: redisClient,
     addKey,
+    deleteKey,
     retrieveKey,
     createHash,
     retrieveHash,
