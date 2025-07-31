@@ -3,13 +3,13 @@
     "transport-protocol": "UDP/TLS/RTP/SAVPF",
     "ICE": "force",
     "SDES": "off",
-    "flags": ["generate mid", "SDES-no", "media handover", "port latching"],
+    "flags": ["generate mid", "SDES-no", "strict source", "port latching"],
     "rtcp-mux": ["require"]  
   },
   "teams": {
     "transport-protocol": "RTP/SAVP",
     "ICE": "force",
-    "flags": ["generate mid", "media handover",
+    "flags": ["generate mid", "strict source",
       "SDES-no-AES_CM_128_HMAC_SHA1_32",
       "SDES-no-F8_128_HMAC_SHA1_80",
       "SDES-no-F8_128_HMAC_SHA1_32",
