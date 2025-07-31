@@ -9,7 +9,7 @@
   "teams": {
     "transport-protocol": "RTP/SAVP",
     "ICE": "force",
-    "flags": ["generate mid", "strict source",
+    "flags": ["generate mid",
       "SDES-no-AES_CM_128_HMAC_SHA1_32",
       "SDES-no-F8_128_HMAC_SHA1_80",
       "SDES-no-F8_128_HMAC_SHA1_32",
