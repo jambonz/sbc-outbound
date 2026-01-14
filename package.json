@@ -39,7 +39,7 @@
     "cidr-matcher": "^2.1.1",
     "debug": "^4.4.3",
     "drachtio-fn-b2b-sugar": "^0.2.1",
-    "drachtio-srf": "^5.0.12",
+    "drachtio-srf": "^5.0.17",
     "express": "^4.21.2",
     "pino": "^10.1.0",
     "sdp-transform": "^2.15.0"
