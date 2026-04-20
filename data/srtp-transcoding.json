@@ -20,6 +20,13 @@
       "SDES-no-AES_256_CM_HMAC_SHA1_80",
       "SDES-no-AES_256_CM_HMAC_SHA1_32"
     ],
-    "rtcp-mux": ["require"]  
+    "rtcp-mux": ["require"]
+  },
+  "sdes": {
+    "transport-protocol": "RTP/SAVP",
+    "ICE": "remove",
+    "DTLS": "off",
+    "flags": ["generate mid", "port latching"],
+    "rtcp-mux": ["demux"]
   }
 }
