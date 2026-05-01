@@ -29,8 +29,18 @@ Configuration is provided via environment variables:
 |JAMBONES_RTPENGINES| commans-separated list of ip:ng-port for rtpengines (e.g. '172.31.32.10:22222')|yes|
 |JAMBONES_TIME_SERIES_HOST| influxdb host |yes|
 |JAMBONES_RECORD_ALL_CALLS| enable auto record calls |no|
+|JAMBONES_CODEC_OFFER_WITH_ORDER| comma-separated codec list to use as the outbound offer toward the carrier; the original codecs from the feature server are stripped first (e.g. `'opus,PCMU,PCMA,telephone-event'`) |no|
+|JAMBONES_CODEC_TRANSCODE| comma-separated codec list that rtpengine should add to the outbound offer and transcode on the fly when the carrier selects them — used to support codecs the feature server does not speak (e.g. `'AMR-WB/16000'`). Requires an rtpengine build that includes the corresponding codec module. |no|
+|JAMBONES_ACCEPT_AND_TRANSCODE| comma-separated codec list to accept on the outbound leg and transcode to PCMU/PCMA toward the feature server |no|
+|JAMBONES_ACCEPT_G729| if set, accept G.729 on the outbound leg and transcode to PCMU/PCMA (shorthand for `JAMBONES_ACCEPT_AND_TRANSCODE=g729`) |no|
 |K8S| service running as kubernetes service |no|
 |K8S_RTPENGINE_SERVICE_NAME| rtpengine service name(required for K8S) |no|
+
+#### Codec transcoding notes
+
+`JAMBONES_CODEC_OFFER_WITH_ORDER` and `JAMBONES_CODEC_TRANSCODE` can be combined. When both are set, rtpengine first strips the original codecs from the SDP, then adds the codecs listed in `JAMBONES_CODEC_OFFER_WITH_ORDER` to the offer, and finally adds the codecs from `JAMBONES_CODEC_TRANSCODE` with transcoding enabled. When only `JAMBONES_CODEC_TRANSCODE` is set, the original codecs from the feature server are kept in the offer and the transcode codecs are appended.
+
+Codecs that require licensed or optional rtpengine modules (AMR, AMR-WB, G.729, etc.) only work if rtpengine was compiled with support for them. Carrier-specific fmtp parameters (for example, `octet-align=1` for AMR-WB) can be appended to the codec name as needed (e.g. `AMR-WB/16000;octet-align=1`).
 
 ### running under pm2
 Typically, this application runs under [pm2](https://pm2.io) using an [ecosystem.config.js](https://pm2.keymetrics.io/docs/usage/application-declaration/) file similar to this:
