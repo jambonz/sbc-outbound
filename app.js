@@ -70,7 +70,8 @@ const {
   isMemberOfSet,
   addKey,
   deleteKey,
-  retrieveKey
+  retrieveKey,
+  addToSet
 } = require('@jambonz/realtimedb-helpers')({}, logger);
 
 const activeCallIds = new Map();
@@ -123,6 +124,17 @@ const {getRtpEngine, setRtpEngines} = require('@jambonz/rtpengine-utils')([], lo
   protocol: ngProtocol
 });
 srf.locals.getRtpEngine = getRtpEngine;
+
+/* report our call count to redis so a draining sbc-inbound process can count
+   calls across all sbc-inbound and sbc-outbound processes on this server */
+if (!process.env.K8S && 'test' !== process.env.NODE_ENV) {
+  srf.locals.callCountReporter = require('./lib/call-count-reporter')({
+    logger,
+    addKey,
+    addToSet,
+    getCount: () => activeCallIds.size
+  });
+}
 
 if (process.env.DRACHTIO_HOST && !process.env.K8S) {
   const cidrs = process.env.JAMBONES_NETWORK_CIDR
