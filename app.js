@@ -132,8 +132,16 @@ if (process.env.DRACHTIO_HOST && !process.env.K8S) {
   const matcher = new CIDRMatcher(cidrs);
 
   srf.connect({host: process.env.DRACHTIO_HOST, port: process.env.DRACHTIO_PORT, secret: process.env.DRACHTIO_SECRET });
-  srf.on('connect', (err, hp) => {
-    logger.info(`connected to drachtio listening on ${hp}`);
+  srf.on('connect', (err, hp, version, localHostports) => {
+    logger.info(`connected to drachtio listening on ${hp}, local hostports: ${localHostports}`);
+
+    /* local tcp address, as recorded in register_status and active-sip; hp may carry the public IP */
+    for (const lhp of (localHostports || '').split(',')) {
+      const arr = /^(.*)\/(.*):(\d+)$/.exec(lhp);
+      if (arr && 'tcp' === arr[1] && matcher.contains(arr[2])) {
+        srf.locals.localPrivateSipAddress = `${arr[2]}:${arr[3]}`;
+      }
+    }
 
     const hostports = hp.split(',');
     for (const hp of hostports) {

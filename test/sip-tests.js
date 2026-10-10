@@ -113,6 +113,28 @@ test('sbc-outbound tests', async(t) => {
     console.log(`${res.total} cdrs: ${JSON.stringify(res)}`);
     t.ok(res.total === 9, 'wrote 9 cdrs');
 
+    /* registration trunk: calls must leave from the SBC holding the registration */
+    const setRegisterStatus = (privateSbcAddress) => {
+      const status = JSON.stringify({
+        status: 'ok', reason: '200 OK', privateSbcAddress, timestamp: new Date().toISOString(), expires: 3600
+      });
+      execSync(`mysql -h 127.0.0.1 -u root --protocol=tcp -D jambones_test -e "UPDATE voip_carriers SET requires_register = 1, register_status = '${status.replace(/"/g, '\\"')}' WHERE voip_carrier_sid = '287c1452-620d-4195-9f19-c9814ef90d78'"`);
+    };
+    srf.locals.localPrivateSipAddress = '172.39.0.10:5060';
+
+    setRegisterStatus('172.39.0.99:5060');
+    await redisClient.sadd('default:active-sip', '172.39.0.99:5060');
+    await sippUac('uac-pcap-carrier-redirect-302.xml');
+    t.pass('redirects a registration trunk call to the SBC holding the registration');
+
+    await redisClient.srem('default:active-sip', '172.39.0.99:5060');
+    await sippUac('uac-pcap-carrier-success.xml');
+    t.pass('sends the call itself when the registering SBC is not active');
+
+    setRegisterStatus('172.39.0.10:5060');
+    await sippUac('uac-pcap-carrier-success.xml');
+    t.pass('sends the call itself when it holds the registration');
+
     srf.disconnect();
   } catch (err) {
     console.error(err);

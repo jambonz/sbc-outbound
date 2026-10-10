@@ -1,3 +1,4 @@
+require('./registering-sbc-test');
 require('./docker_start');
 require('./create-test-db');
 require('./sip-tests');
